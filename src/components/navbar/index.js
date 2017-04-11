@@ -1,5 +1,5 @@
 import View from 'ampersand-view'
-import NavbarForm from 'view/navbar/form'
+import NavbarForm from './form'
 
 const template = `
 <nav class="navbar navbar-default navbar-static-top" style="flex-grow: 0;">
@@ -19,8 +19,5 @@ export default View.extend({
       hook: 'navbar-collapse',
       constructor: NavbarForm
     }
-  },
-  // initialize: function () {
-  //   console.log('navbar')
-  // }
+  }
 })

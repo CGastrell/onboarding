@@ -1,5 +1,5 @@
 import App from 'ampersand-app'
-import Navbar from 'view/navbar'
+import Navbar from 'components/navbar'
 import MapView from 'view/map'
 import { loadLayers, loadGeocoder } from 'mapquest-loader'
 
