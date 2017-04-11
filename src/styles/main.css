@@ -1,0 +1,16 @@
+document, body, html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+#content-container {
+  flex-grow: 1;
+  display: flex;
+}
+
+.navbar {
+  margin-bottom: 0;
+}
