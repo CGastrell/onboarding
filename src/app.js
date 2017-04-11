@@ -8,6 +8,8 @@ import bootbox from 'bootbox'
 import GlobalState from 'state'
 import 'styles/main.css'
 
+console.log('initializing app')
+
 window.app = App
 App.extend({
   globalState: new GlobalState(),
