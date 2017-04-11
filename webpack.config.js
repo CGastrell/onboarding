@@ -5,7 +5,13 @@ var webpack = require('webpack')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var UglifyJsPlugin = require('webpack-uglify-js-plugin')
+
+// only debugging
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+
+// GH-PAGES deployment
+var publicPath = process.env['SITE'] === 'ghpages' ? '/onboarding/' : '/'
+var filenameTemplate = process.env['SITE'] === 'ghpages' ? '[name]' : '[name]-[hash:6]'
 
 module.exports = {
   target: 'web',
@@ -16,8 +22,8 @@ module.exports = {
   ],
   output: {
     path: path.join(__dirname, '/public/'),
-    filename: '[name]-[hash:6].js',
-    publicPath: '/'
+    filename: filenameTemplate + '.js',
+    publicPath: publicPath
   },
   resolve: {
     modules: [
@@ -27,12 +33,12 @@ module.exports = {
   },
   plugins: [
     // new BundleAnalyzerPlugin(),
-    // new webpack.ProvidePlugin({
-    //   $: 'jquery',
-    //   jQuery: 'jquery',
-    //   'window.jQuery': 'jquery'
-    // }),
-    new ExtractTextPlugin('[name]-[hash:6].css'),
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+      'window.jQuery': 'jquery'
+    }),
+    new ExtractTextPlugin(filenameTemplate + '.css'),
     new HtmlWebpackPlugin({
       template: 'src/template/index.tpl.html',
       inject: 'body',
@@ -75,7 +81,7 @@ module.exports = {
         loader: 'url-loader',
         query: {
           limit: 8192,
-          name: 'fonts/[name]-[hash:6].[ext]'
+          name: 'fonts/' + filenameTemplate + '.[ext]'
         }
       },
       {
@@ -83,7 +89,7 @@ module.exports = {
         loader: 'url-loader',
         query: {
           limit: 5000,
-          name: 'images/[name]-[hash:6].[ext]'
+          name: 'images/' + filenameTemplate + '.[ext]'
         }
       },
       {

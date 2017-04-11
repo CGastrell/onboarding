@@ -8,6 +8,7 @@
     "start": "NODE_ENV=production node index",
     "deploy": "now -e NODE_ENV='production'",
     "build": "NODE_ENV=production ./node_modules/webpack/bin/webpack.js -p",
+    "deploy-to-github": "SITE=ghpages npm run build && git subtree push --prefix public origin gh-pages",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
