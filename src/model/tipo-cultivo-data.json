@@ -1,0 +1,75 @@
+[
+  {
+    "id_tipo_cultivo": 1,
+    "nombre": "Trigo",
+    "gruesa": false
+  }, {
+    "id_tipo_cultivo": 4,
+    "nombre": "Soja",
+    "gruesa": true
+  }, {
+    "id_tipo_cultivo": 5,
+    "nombre": "Soja II",
+    "gruesa": true
+  }, {
+    "id_tipo_cultivo": 6,
+    "nombre": "Cebada",
+    "gruesa": false
+  }, {
+    "id_tipo_cultivo": 7,
+    "nombre": "Girasol",
+    "gruesa": true
+  }, {
+    "id_tipo_cultivo": 8,
+    "nombre": "Arveja",
+    "gruesa": false
+  }, {
+    "id_tipo_cultivo": 9,
+    "nombre": "Caña",
+    "gruesa": true
+  }, {
+    "id_tipo_cultivo": 10,
+    "nombre": "Sorgo",
+    "gruesa": true
+  }, {
+    "id_tipo_cultivo": 13,
+    "nombre": "Papa",
+    "gruesa": true
+  }, {
+    "id_tipo_cultivo": 14,
+    "nombre": "Algodón",
+    "gruesa": true
+  }, {
+    "id_tipo_cultivo": 11,
+    "nombre": "Sin Cultivo",
+    "gruesa": false
+  }, {
+    "id_tipo_cultivo": 12,
+    "nombre": "Maní",
+    "gruesa": true
+  }, {
+    "id_tipo_cultivo": 15,
+    "nombre": "Avena",
+    "gruesa": false
+  }, {
+    "id_tipo_cultivo": 2,
+    "nombre": "Maíz",
+    "gruesa": true
+  }, {
+    "id_tipo_cultivo": 3,
+    "nombre": "Maíz Tardío",
+    "gruesa": true
+  }, {
+    "id_tipo_cultivo": 16,
+    "nombre": "Pastura",
+    "gruesa": true
+  }, {
+    "id_tipo_cultivo": 17,
+    "nombre": "Tabaco",
+    "gruesa": true
+  }, {
+    "id_tipo_cultivo": 18,
+    "nombre": "Poroto Mung",
+    "gruesa": true
+  }
+]
