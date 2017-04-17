@@ -7,7 +7,7 @@
     "dev": "node index",
     "start": "NODE_ENV=production node index",
     "deploy": "now -e NODE_ENV='production'",
-    "build": "NODE_ENV=production webpack.js -p",
+    "build": "NODE_ENV=production webpack -p",
     "deploy-to-github": "SITE=ghpages npm run build && git add public && git commit -m 'deploy dist update' && git push origin `git subtree split --prefix public master`:gh-pages --force",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
