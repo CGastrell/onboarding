@@ -1,21 +1,35 @@
 import AmpersandCollection from 'ampersand-collection'
 import AmpersandModel from 'ampersand-model'
 
-const LotModel = AmpersandModel.extend({
+export const Model = AmpersandModel.extend({
   props: {
-    nombre: [ 'string', false, '' ],
+    nombre: [ 'string', true ],
     settlement: {
       type: 'state'
     },
-    geometry: [ 'array', false, () => [] ],
-    cultivo: [ 'string', false, '' ]
+    geometry: [ 'object' ],
+    cultivo: [ 'string' ],
+    producto: [ 'string' ],
+    // geo stuff
+    area: 'number',
+    perimeter: 'number',
+    id_localidad: 'number'
   }
 })
 
-const LotCollection = AmpersandCollection.extend({
-  model: LotModel,
+export const Collection = AmpersandCollection.extend({
+  model: Model,
   mainIndex: 'nombre'
 })
 
-export { LotCollection as Collection }
-export { LotModel as Model }
+// max zoom 12 nominatim administrative levels:
+// AR
+// village
+// state_district
+// state
+// country
+
+// UY
+// road
+// country
+// state

@@ -1,5 +1,10 @@
 import View from 'ampersand-view'
 import L from 'leaflet'
+import bootbox from 'components/bootbox'
+import { Model as Lot } from 'model/lot'
+import LotForm from 'components/lot-form'
+import geojsonRewind from 'geojson-rewind'
+import App from 'ampersand-app'
 
 import 'leaflet-draw'
 import 'leaflet/dist/leaflet.css'
@@ -25,15 +30,12 @@ const drawDefaultOptions = {
   }
 }
 
-const lotModel = {
-  id: null,
-  nombre: '',
-  settlementId: null
-}
-
 export default View.extend({
   autoRender: true,
-  template: `<div id="map" style="flex-grow: 1;"></div>`,
+  template: `<div id="map"></div>`,
+  initialize: function () {
+    this.onCreated = this.onCreated.bind(this)
+  },
   render: function () {
     window.aaa = this
     this.renderWithTemplate(this)
@@ -49,9 +51,12 @@ export default View.extend({
     this.drawLayer = new L.GeoJSON()
     this.map = L.map(this.el, {
       layers: [this.drawLayer, this.hybridLayer],
-      center: [ -38.68550976001201, -63.89648437500001 ],
-      zoom: 5
+      center: [ App.state.mapstate.center.lat, App.state.mapstate.center.lng ],
+      zoom: App.state.mapstate.zoom
     })
+
+    // keep the state current
+    this.map.on('moveend', this.updateState)
 
     L.control.layers({
       'H&iacute;brido': this.hybridLayer,
@@ -63,23 +68,52 @@ export default View.extend({
     options.edit.featureGroup = this.drawLayer
     this.drawControl = new L.Control.Draw(options).addTo(this.map)
 
-    this.map.on(L.Draw.Event.CREATED, (event) => {
-      // event.target -> L.Map
-      // event.layer -> L.Polygon (or proper geometry primitive)
-      const layer = event.layer
-      layer.feature = layer.feature || {}
-      layer.feature.type = 'Feature' // <- this is IMPORTANT
-      layer.feature.properties = layer.feature.properties || JSON.parse(JSON.stringify(lotModel))
-      layer.on('click', this.openPolygonModal)
-
-      this.drawLayer.addLayer(layer)
-
-      // _leaflet_id only exists once the layer is on the map
-      layer.feature.properties.id = layer._leaflet_id
-    })
+    this.map.on(L.Draw.Event.CREATED, this.onCreated)
   },
-  update: function () {
+  onCreated: function (event) {
+    // event.target -> L.Map
+    // event.layer -> L.Polygon (or proper geometry primitive)
+    const layer = event.layer
+    layer.feature = layer.feature || {}
+    layer.feature.type = 'Feature' // <- this is IMPORTANT
+    layer.feature.properties = layer.feature.properties || new Lot().toJSON()
+    // rewind layer points to avoid problems later
+    layer.setLatLngs(this.rewind(layer))
+    layer.feature.properties.area = this.getPolygonArea(layer)
+    layer.feature.properties.perimeter = this.getPolygonPerimeter(layer)
+    layer.on('click', this.openPolygonModal, this)
 
+    this.drawLayer.addLayer(layer)
+
+    // _leaflet_id only exists once the layer is on the map
+    layer.feature.properties.id = layer._leaflet_id
+    this.openPolygonModal({target: layer})
+  },
+  updateState: function (event) {
+    App.state.mapstate.center = Object.assign({}, event.target.getCenter())
+    App.state.mapstate.zoom = event.target.getZoom()
+  },
+  rewind: function (layer) {
+    let gj = layer.toGeoJSON()
+    gj = geojsonRewind(gj)
+    return L.geoJSON(gj).getLayers()[0].getLatLngs()
+  },
+  // returns the area in m2
+  // TODO: oddity, the function is supposed to work with getLatLngs(),
+  // which is a nested array, but that is returning 0 somehow. So reduce.
+  getPolygonArea: function (layer) {
+    return L.GeometryUtil.geodesicArea(layer.getLatLngs().reduce((acc, cur) => Array.prototype.concat(acc, cur)))
+  },
+  getPolygonPerimeter: function (layer) {
+    const points = layer.getLatLngs().reduce((acc, cur) => Array.prototype.concat(acc, cur))
+    if (points.length < 3) {
+      throw new Error('this is not a polygon')
+    }
+    let totalDistance = 0
+    for (var ii = 0; ii < points.length - 1; ii++) {
+      totalDistance += L.latLng(points[ii]).distanceTo(L.latLng(points[ii + 1]))
+    }
+    return totalDistance
   },
   // this is now performed by L.GeoJSON.toGeoJSON()
   layerToGeoJSON: function (layer) {
@@ -93,6 +127,29 @@ export default View.extend({
   },
   openPolygonModal: function (event) {
     console.log(event.target.toGeoJSON())
-    // bootbox.alert('Flash!')
+    this.theForm = new LotForm({
+      model: new Lot()
+    })
+    this.theForm.render()
+    const theModal = bootbox.form(
+      {
+        message: this.theForm.el,
+        title: 'Datos del lote'
+      },
+      save => {
+        console.log('save callback:')
+        console.log(save)
+        if (!save) return
+
+        if (!this.theForm.valid) {
+          bootbox.alert({
+            title: 'Validacion de datos',
+            message: 'Por favor, revise que todos los campos esten correctos'
+          })
+          return false
+        }
+        this.theForm.remove()
+      }
+    )
   }
 })

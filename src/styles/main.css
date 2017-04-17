@@ -6,11 +6,24 @@ document, body, html {
   flex-direction: column;
 }
 
-#content-container {
+#content-container, #map-container {
   flex-grow: 1;
   display: flex;
 }
 
+#map {
+  flex-grow: 1;
+}
+
 .navbar {
   margin-bottom: 0;
+}
+
+.bootbox-body:after, .bootbox-body:after {
+  content: ' ';
+  clear: both;
+}
+
+select.form-control.comboselect {
+  -webkit-appearance: initial;
 }

@@ -1,7 +1,7 @@
 import View from 'ampersand-view'
 import L from 'leaflet'
 import App from 'ampersand-app'
-// import $ from 'jquery'
+import $ from 'jquery'
 
 import flatten from 'geojson-flatten'
 import 'bootstrap-3-typeahead'
@@ -15,8 +15,7 @@ const template = `
 export default View.extend({
   // autoRender: true, // a subview with autoRender won't work
   props: {
-    dataLoaded: ['boolean', false, false],
-    dataset: ['array', false, () => []]
+    dataLoaded: ['boolean', false, false]
   },
   template: template,
   initialize: function () {
@@ -36,11 +35,11 @@ export default View.extend({
     window.fetch('localidades.json')
       .then(response => response.json())
       .then(json => {
-        this.dataset = json
+        App.state.localidades.reset(json)
         this.dataLoaded = true
 
         $input.typeahead({
-          source: this.dataset,
+          source: App.state.localidades.toJSON(),
           autoSelect: false,
           displayText: function (item) {
             return (typeof item !== 'undefined' && typeof item.localidad !== 'undefined' && item.localidad) || item
@@ -60,14 +59,5 @@ export default View.extend({
       .catch(error => {
         console.log(error)
       })
-  },
-  // events: {
-  //   submit: function (event) {
-  //     event.preventDefault()
-  //     const leForm = event.target
-  //     const searchTerm = leForm.getElementsByTagName('input')[0].value
-  //     console.log(searchTerm)
-  //     window.bbb = event
-  //   }
-  // }
+  }
 })

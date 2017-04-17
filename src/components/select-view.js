@@ -2,14 +2,29 @@ import SelectView from 'ampersand-select-view'
 import assign from 'lodash/assign'
 
 // hay que reescribir el SelectView, es medio mersa
-export default SelectView.assign({
+export default SelectView.extend({
   props: {
     value: 'any',
-    styles: ['string', false, 'col-sm-6 form-group']
+    styles: ['string', false, 'form-group']
   },
   initialize (opts) {
     SelectView.prototype.initialize.apply(this, arguments)
-    this.styles += ' amp-input'
+    this.onBlur = this.onBlur.bind(this)
+  },
+  bindDOMEvents: function () {
+    SelectView.prototype.bindDOMEvents.apply(this, arguments)
+    this.select.addEventListener('blur', this.onBlur, false)
+  },
+  onBlur: function () {
+    var value = this.select.selectedIndex !== null && this.select.selectedIndex !== undefined && this.select.selectedIndex > -1
+      ? this.select.options[this.select.selectedIndex].value
+      : null
+
+    if (this.options.isCollection && this.yieldModel) {
+      value = this.getModelForId(value)
+    }
+
+    this.setValue(value)
   },
   template: `
     <div data-hook="styles">

@@ -15,12 +15,12 @@ const createFormModal = function (options, callback) {
     title: options.title,
     buttons: [
       {
-        label: 'Close',
+        label: 'Cerrar',
         className: 'btn btn-default',
         callback: closeCallback
       },
       {
-        label: 'Save',
+        label: 'Guardar',
         className: 'btn btn-primary',
         callback: saveCallback
       }
