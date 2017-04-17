@@ -1,0 +1,35 @@
+import App from 'ampersand-app'
+import SelectView from 'components/select-view'
+import bootbox from 'components/bootbox'
+
+export default SelectView.extend({
+  template: `
+    <div data-hook="styles">
+      <label data-hook="label" class="control-label"></label>
+      <div class="input-group">
+        <select class="form-control comboselect"></select>
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button">+</button>
+        </span>
+      </div>
+      <div data-hook="message-container">
+        <p data-hook="message-text" class="alert alert-warning"></p>
+      </div>
+    </div>`,
+  events: {
+    'click .btn-default': function (event) {
+      const buttonElement = event.target
+      bootbox.prompt(
+        'Ingrese un nombre para el establecimiento',
+        answer => {
+          if (!answer) return
+
+          App.state.settlements.add({
+            nombre: answer
+          })
+          buttonElement.focus()
+        }
+      )
+    }
+  }
+})
