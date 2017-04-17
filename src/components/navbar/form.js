@@ -2,6 +2,9 @@ import View from 'ampersand-view'
 import L from 'leaflet'
 import App from 'ampersand-app'
 import $ from 'jquery'
+import { Collection as Localidades } from 'model/localidad'
+
+import NProgress from 'nprogress'
 
 import flatten from 'geojson-flatten'
 import 'bootstrap-3-typeahead'
@@ -31,13 +34,13 @@ export default View.extend({
     const input = this.query('input')
     // pehaujo is at -35.82157139161191 -61.896800994873054, zoom 12
     const $input = $(input)
-
     window.fetch('localidades.json')
       .then(response => response.json())
       .then(json => {
-        App.state.localidades.reset(json)
+        App.state.localidades = new Localidades(json)
         this.dataLoaded = true
-
+        // this is the longest process, so NProgress is 'done' here
+        NProgress.done(true)
         $input.typeahead({
           source: App.state.localidades.toJSON(),
           autoSelect: false,
@@ -57,7 +60,7 @@ export default View.extend({
         })
       })
       .catch(error => {
-        console.log(error)
+        console.warn(error)
       })
   }
 })

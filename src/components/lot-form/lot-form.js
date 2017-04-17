@@ -2,7 +2,8 @@ import App from 'ampersand-app'
 import FormView from 'ampersand-form-view'
 import InputView from 'components/input-view'
 import TypeaheadView from 'components/input-view/typeahead'
-import SelectView from './select-with-buttons-view'
+import CustomSelectView from './select-with-buttons-view'
+import SelectView from 'components/select-view'
 
 // import TagsInputView from 'components/input-view/tagsinput'
 // import 'styles/bootstrap-tagsinput.css'
@@ -24,7 +25,7 @@ export default FormView.extend({
         invalidClass: 'text-danger',
         validityClassSelector: '.control-label'
       }),
-      new SelectView({
+      new CustomSelectView({
         name: 'settlement',
         label: 'Establecimiento',
         required: true,
@@ -32,11 +33,27 @@ export default FormView.extend({
         value: this.model.settlement,
         invalidClass: 'text-danger',
         options: App.state.settlements,
+        yieldModel: false,
         idAttribute: 'nombre',
         textAttribute: 'nombre',
         validityClassSelector: '.control-label'
       }),
+      new SelectView({
+        name: 'id_tipo_cultivo',
+        label: 'Cultivo',
+        required: true,
+        requiredMessage: 'Necesita especificar un cultivo',
+        value: this.model.id_cultivo,
+        invalidClass: 'text-danger',
+        options: App.state.tipoCultivos,
+        yieldModel: false,
+        idAttribute: 'id_tipo_cultivo',
+        textAttribute: 'nombre',
+        validityClassSelector: '.control-label'
+      }),
       this.idLocalidadInputView,
+      // TODO: after selecting a loc, if you type and re-select,
+      // the label will remain as if it wasn't valid
       new TypeaheadView({
         name: 'localidad',
         label: 'Localidad',
@@ -58,6 +75,11 @@ export default FormView.extend({
             if (!this.idLocalidadInputView.value) {
               return 'Debe seleccionar una localidad'
             }
+            const definedLoc = App.state.localidades.get(this.idLocalidadInputView.value)
+            if (!definedLoc || definedLoc.localidad !== value) {
+              return 'La localidad no fue seleccionada del listado'
+            }
+            return ''
           }
         ]
       })

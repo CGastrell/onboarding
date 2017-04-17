@@ -10,9 +10,10 @@ export default AmpersandView.extend({
     form: {
       hook: 'form-container',
       prepareView: function (el) {
-        return new LotForm({
+        this.formView = new LotForm({
           model: this.model
         })
+        return this.formView
       }
     }
   }

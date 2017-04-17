@@ -3,6 +3,9 @@ import Navbar from 'components/navbar'
 import MapView from 'view/map'
 import { loadLayers, loadGeocoder } from 'mapquest-loader'
 
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
+
 import 'bootstrap/js/modal'
 import bootbox from 'bootbox'
 import GlobalState from 'state'
@@ -14,16 +17,21 @@ import tipocultivos from 'model/tipo-cultivo-data.json'
 console.log('initializing app')
 
 window.app = App
+NProgress.start()
+
 App.extend({
   state: new GlobalState(),
+  locsLoaded: false,
   init: function () {
     App.Navbar = new Navbar()
     const navbarContainer = document.getElementById('navbar-container')
     navbarContainer.append(App.Navbar.el)
-
+    NProgress.inc()
     loadLayers()
       .then(() => {
+        NProgress.inc()
         this.createMapView()
+        NProgress.inc()
       })
       // .then(() => {
       //   loadGeocoder()
@@ -34,10 +42,10 @@ App.extend({
       })
   },
   createMapView: function () {
-    const mapContainer = this.cleanMapElement()
-
     // leaflet needs the element already on the dom
     // to render properly
+    const mapContainer = this.cleanMapElement()
+
     App.Map = new MapView({
       el: mapContainer
     })

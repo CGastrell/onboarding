@@ -126,14 +126,21 @@ export default View.extend({
     }
   },
   openPolygonModal: function (event) {
-    console.log(event.target.toGeoJSON())
-    this.theForm = new LotForm({
-      model: new Lot()
+    const feature = event.target.toGeoJSON()
+console.log(feature)
+    this.lotForm = new LotForm({
+      model: new Lot({
+        id: feature.properties.id,
+        geometry: feature.geometry,
+        area: feature.properties.area,
+        perimeter: feature.properties.perimeter
+      })
     })
-    this.theForm.render()
+    this.lotForm.render()
+
     const theModal = bootbox.form(
       {
-        message: this.theForm.el,
+        message: this.lotForm.el,
         title: 'Datos del lote'
       },
       save => {
@@ -141,14 +148,14 @@ export default View.extend({
         console.log(save)
         if (!save) return
 
-        if (!this.theForm.valid) {
+        if (!this.lotForm.formView.valid) {
           bootbox.alert({
             title: 'Validacion de datos',
             message: 'Por favor, revise que todos los campos esten correctos'
           })
           return false
         }
-        this.theForm.remove()
+        this.lotForm.remove()
       }
     )
   }

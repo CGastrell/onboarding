@@ -2,24 +2,26 @@ import AmpersandCollection from 'ampersand-collection'
 import AmpersandModel from 'ampersand-model'
 
 export const Model = AmpersandModel.extend({
+  idAttribute: 'id',
   props: {
+    id: 'number',
     nombre: [ 'string', true ],
-    settlement: {
-      type: 'state'
-    },
-    geometry: [ 'object' ],
-    cultivo: [ 'string' ],
+    settlement: 'string',
+    id_tipo_cultivo: [ 'number' ],
     producto: [ 'string' ],
+    // the problem with id_localidad is that it comes
+    // from a hidden input, typed as string
+    id_localidad: 'any',
     // geo stuff
+    geometry: [ 'object' ],
     area: 'number',
-    perimeter: 'number',
-    id_localidad: 'number'
+    perimeter: 'number'
   }
 })
 
 export const Collection = AmpersandCollection.extend({
   model: Model,
-  mainIndex: 'nombre'
+  mainIndex: 'id'
 })
 
 // max zoom 12 nominatim administrative levels:

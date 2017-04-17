@@ -9,7 +9,7 @@ export default SelectView.extend({
       <div class="input-group">
         <select class="form-control comboselect"></select>
         <span class="input-group-btn">
-          <button class="btn btn-default" type="button">+</button>
+          <button class="btn btn-primary settlement-add-button" type="button">+</button>
         </span>
       </div>
       <div data-hook="message-container">
@@ -17,7 +17,7 @@ export default SelectView.extend({
       </div>
     </div>`,
   events: {
-    'click .btn-default': function (event) {
+    'click .settlement-add-button': function (event) {
       const buttonElement = event.target
       bootbox.prompt(
         'Ingrese un nombre para el establecimiento',
