@@ -2,7 +2,6 @@ import View from 'ampersand-view'
 import L from 'leaflet'
 import App from 'ampersand-app'
 import $ from 'jquery'
-import { Collection as Localidades } from 'model/localidad'
 
 import NProgress from 'nprogress'
 
@@ -32,22 +31,27 @@ export default View.extend({
   render: function () {
     this.renderWithTemplate(this)
     const input = this.query('input')
-    // pehaujo is at -35.82157139161191 -61.896800994873054, zoom 12
     const $input = $(input)
     window.fetch('localidades.json')
       .then(response => response.json())
       .then(json => {
-        App.state.localidades = new Localidades(json)
+        App.state.localidades = json
         this.dataLoaded = true
-        // this is the longest process, so NProgress is 'done' here
-        NProgress.done(true)
+        console.log('resolved locs')
+        App.progress.inc()
         $input.typeahead({
-          source: App.state.localidades.toJSON(),
+          source: App.state.localidades,
           autoSelect: false,
           displayText: function (item) {
             return (typeof item !== 'undefined' && typeof item.localidad !== 'undefined' && item.localidad) || item
           }
         })
+        if (App.mostlyLoaded) {
+          App.progress.done()
+        } else {
+          App.mostlyLoaded = true
+          App.progress.inc()
+        }
 
         $input.change(function (event) {
           const current = $input.typeahead('getActive')

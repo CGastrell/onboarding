@@ -1,5 +1,6 @@
 var express = require('express')
 var app = express()
+var compression = require('compression')
 
 var env = process.env['NODE_ENV']
 
@@ -15,6 +16,7 @@ if(env !== 'production') {
   }))
   app.use(require('webpack-hot-middleware')(compiler))
 }
+app.use(compression())
 app.use(express.static('public'))
 
 app.listen(3000, function () {

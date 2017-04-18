@@ -17,9 +17,10 @@ module.exports = {
   target: 'web',
   devtool: false,
   // devtool: 'eval-source-map',
-  entry: [
-    path.join(__dirname, 'src/app.js')
-  ],
+  entry: {
+    main: './src/app.js',
+    vendor: ['jquery', 'leaflet']
+  },
   output: {
     path: path.join(__dirname, '/public/'),
     filename: filenameTemplate + '.js',
@@ -32,6 +33,7 @@ module.exports = {
     ]
   },
   plugins: [
+    new webpack.optimize.CommonsChunkPlugin({ name: 'vendor', filename: 'vendor.bundle.js' }),
     // new BundleAnalyzerPlugin(),
     new webpack.ProvidePlugin({
       $: 'jquery',

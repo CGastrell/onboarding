@@ -62,7 +62,7 @@ export default FormView.extend({
         requiredMessage: 'Debe seleccionar una localidad de la lista',
         value: this.model.localidad,
         invalidClass: 'text-danger',
-        options: App.state.localidades.toJSON(),
+        options: App.state.localidades,
         idAttribute: 'id_localidad',
         textAttribute: 'localidad',
         validityClassSelector: '.control-label',
@@ -75,7 +75,8 @@ export default FormView.extend({
             if (!this.idLocalidadInputView.value) {
               return 'Debe seleccionar una localidad'
             }
-            const definedLoc = App.state.localidades.get(this.idLocalidadInputView.value)
+            const casted = Number(this.idLocalidadInputView.value)
+            const definedLoc = App.state.localidades.find(loc => loc.id_localidad === casted)
             if (!definedLoc || definedLoc.localidad !== value) {
               return 'La localidad no fue seleccionada del listado'
             }

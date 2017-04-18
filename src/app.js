@@ -11,27 +11,29 @@ import bootbox from 'bootbox'
 import GlobalState from 'state'
 import 'styles/main.css'
 
-import cultivos from 'model/cultivo-data.json'
-import tipocultivos from 'model/tipo-cultivo-data.json'
-
 console.log('initializing app')
 
 window.app = App
-NProgress.start()
 
 App.extend({
   state: new GlobalState(),
-  locsLoaded: false,
+  progress: NProgress,
+  Navbar: null,
+  Map: null,
+  mostlyLoaded: false,
   init: function () {
-    App.Navbar = new Navbar()
-    const navbarContainer = document.getElementById('navbar-container')
-    navbarContainer.append(App.Navbar.el)
-    NProgress.inc()
+    App.progress.start()
+    App.Navbar = this.createNavbarView()
     loadLayers()
       .then(() => {
-        NProgress.inc()
-        this.createMapView()
-        NProgress.inc()
+        App.progress.inc()
+        App.Map = this.createMapView()
+        if (App.mostlyLoaded) {
+          App.progress.done()
+        } else {
+          App.mostlyLoaded = true
+          App.progress.inc()
+        }
       })
       // .then(() => {
       //   loadGeocoder()
@@ -41,12 +43,21 @@ App.extend({
         bootbox.alert('No se pudo inicializar el mapa, por favor vuelva a cargar la pagina')
       })
   },
+  createNavbarView: function () {
+    if (App.Navbar) {
+      App.Navbar.remove()
+    }
+    const nav = new Navbar()
+    const navbarContainer = document.getElementById('navbar-container')
+    navbarContainer.appendChild(nav.el)
+    return nav
+  },
   createMapView: function () {
     // leaflet needs the element already on the dom
     // to render properly
     const mapContainer = this.cleanMapElement()
 
-    App.Map = new MapView({
+    return new MapView({
       el: mapContainer
     })
   },
@@ -57,12 +68,9 @@ App.extend({
     }
     const el = document.createElement('div')
     el.id = 'map-container'
-    document.getElementById('content-container').append(el)
+    document.getElementById('content-container').appendChild(el)
     return el
   }
 })
-
-App.state.cultivos.reset(cultivos)
-App.state.tipoCultivos.reset(tipocultivos)
 
 App.init()
