@@ -9,18 +9,23 @@ import SelectView from 'components/select-view'
 // import 'styles/bootstrap-tagsinput.css'
 
 export default FormView.extend({
-  initialize: function () {
+  props: {
+    layer: [ 'object', true ],
+    datamodel: [ 'object' ]
+  },
+  initialize: function (options) {
+    this.datamodel = this.layer.feature.properties
     this.idLocalidadInputView = new InputView({
       name: 'id_localidad',
       type: 'hidden',
-      value: this.model.id_localidad
+      value: this.datamodel.id_localidad
     })
 
     this.fields = [
       new InputView({
         name: 'nombre',
         label: 'Nombre',
-        value: this.model.nombre,
+        value: this.datamodel.nombre,
         required: true,
         invalidClass: 'text-danger',
         validityClassSelector: '.control-label'
@@ -30,7 +35,7 @@ export default FormView.extend({
         label: 'Establecimiento',
         required: true,
         requiredMessage: 'Debe seleccionar un establecimiento',
-        value: this.model.settlement,
+        value: this.datamodel.settlement,
         invalidClass: 'text-danger',
         options: App.state.settlements,
         yieldModel: false,
@@ -43,7 +48,7 @@ export default FormView.extend({
         label: 'Cultivo',
         required: true,
         requiredMessage: 'Necesita especificar un cultivo',
-        value: this.model.id_cultivo,
+        value: this.datamodel.id_cultivo,
         invalidClass: 'text-danger',
         options: App.state.tipoCultivos,
         yieldModel: false,
@@ -60,7 +65,7 @@ export default FormView.extend({
         placeholder: 'Comience a tipear',
         required: true,
         requiredMessage: 'Debe seleccionar una localidad de la lista',
-        value: this.model.localidad,
+        value: this.datamodel.localidad,
         invalidClass: 'text-danger',
         options: App.state.localidades,
         idAttribute: 'id_localidad',
@@ -91,7 +96,7 @@ export default FormView.extend({
       //   // placeholder: 'Comience a escribir',
       //   required: true,
       //   requiredMessage: 'Debe seleccionar una localidad',
-      //   // value: this.model.id_localidad,
+      //   // value: this.datamodel.id_localidad,
       //   itemValue: 'id_localidad',
       //   itemText: 'localidad',
       //   maxTags: 1,

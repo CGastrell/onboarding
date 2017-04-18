@@ -1,7 +1,7 @@
 import View from 'ampersand-view'
 import L from 'leaflet'
 import bootbox from 'components/bootbox'
-import { Model as Lot } from 'model/lot'
+import Lot from 'model/lot'
 import LotForm from 'components/lot-form'
 import geojsonRewind from 'geojson-rewind'
 import App from 'ampersand-app'
@@ -16,7 +16,8 @@ const drawDefaultOptions = {
     featureGroup: null,
     poly: {
       allowIntersection: false
-    }
+    },
+    // remove: false
   },
   draw: {
     marker: false,
@@ -49,14 +50,14 @@ export default View.extend({
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     })
     this.drawLayer = new L.GeoJSON()
+    console.log(App.state.mapstate)
     this.map = L.map(this.el, {
       layers: [this.drawLayer, this.hybridLayer],
       center: [ App.state.mapstate.center.lat, App.state.mapstate.center.lng ],
       zoom: App.state.mapstate.zoom
     })
 
-    // keep the state current
-    this.map.on('moveend', this.updateState)
+    this.initializeFeatures()
 
     L.control.layers({
       'H&iacute;brido': this.hybridLayer,
@@ -68,15 +69,30 @@ export default View.extend({
     options.edit.featureGroup = this.drawLayer
     this.drawControl = new L.Control.Draw(options).addTo(this.map)
 
+    // keep the state current
+    this.map.on('moveend', this.updateState)
+
     this.map.on(L.Draw.Event.CREATED, this.onCreated)
+    this.map.on(L.Draw.Event.EDITED, this.updateFeatures.bind(this))
+    this.map.on(L.Draw.Event.DELETED, this.updateFeatures.bind(this))
+  },
+  initializeFeatures: function () {
+    if (App.state.featureCollection && App.state.featureCollection.features.length > 0) {
+      App.state.featureCollection.features.forEach(feature => {
+        const layer = L.geoJSON(feature)
+        layer.eachLayer(l => {
+          l.setLatLngs(this.rewind(l))
+          l.on('click', this.openPolygonModal, this)
+          this.drawLayer.addLayer(l)
+        })
+      })
+    }
   },
   onCreated: function (event) {
     // event.target -> L.Map
     // event.layer -> L.Polygon (or proper geometry primitive)
     const layer = event.layer
-    layer.feature = layer.feature || {}
-    layer.feature.type = 'Feature' // <- this is IMPORTANT
-    layer.feature.properties = layer.feature.properties || new Lot().toJSON()
+    layer.feature = layer.feature || Lot.model
     // rewind layer points to avoid problems later
     layer.setLatLngs(this.rewind(layer))
     layer.feature.properties.area = this.getPolygonArea(layer)
@@ -87,11 +103,17 @@ export default View.extend({
 
     // _leaflet_id only exists once the layer is on the map
     layer.feature.properties.id = layer._leaflet_id
+    this.updateFeatures()
     this.openPolygonModal({target: layer})
   },
   updateState: function (event) {
-    App.state.mapstate.center = Object.assign({}, event.target.getCenter())
-    App.state.mapstate.zoom = event.target.getZoom()
+    App.state.mapstate = {
+      center: Object.assign({}, event.target.getCenter()),
+      zoom: event.target.getZoom()
+    }
+  },
+  updateFeatures: function () {
+    App.state.featureCollection = this.drawLayer.toGeoJSON()
   },
   rewind: function (layer) {
     let gj = layer.toGeoJSON()
@@ -126,19 +148,20 @@ export default View.extend({
     }
   },
   openPolygonModal: function (event) {
-    const feature = event.target.toGeoJSON()
-console.log(feature)
+    window.eee = event
+    if (this.drawControl._toolbars.edit._modes.remove.handler._enabled) {
+      return
+    }
+    const layer = event.target
+    const feature = layer.toGeoJSON()
+
     this.lotForm = new LotForm({
-      model: new Lot({
-        id: feature.properties.id,
-        geometry: feature.geometry,
-        area: feature.properties.area,
-        perimeter: feature.properties.perimeter
-      })
+      datamodel: feature.properties,
+      layer: layer
     })
     this.lotForm.render()
 
-    const theModal = bootbox.form(
+    bootbox.form(
       {
         message: this.lotForm.el,
         title: 'Datos del lote'
@@ -155,6 +178,8 @@ console.log(feature)
           })
           return false
         }
+        layer.feature.properties = Object.assign({}, feature.properteis, this.lotForm.form.data)
+        this.updateFeatures()
         this.lotForm.remove()
       }
     )

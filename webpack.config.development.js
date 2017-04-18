@@ -6,14 +6,18 @@ var HtmlWebpackPlugin = require('html-webpack-plugin')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 // var UglifyJsPlugin = require('webpack-uglify-js-plugin')
 
+var hotMiddlewareScript = 'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true'
+
 module.exports = {
   target: 'web',
   devtool: 'source-map',
   // devtool: 'eval-source-map',
-  entry: [
-    'webpack-hot-middleware/client?reload=true',
-    path.join(__dirname, 'src/app.js')
-  ],
+  entry: {
+    client: hotMiddlewareScript,
+    // client: 'webpack-hot-middleware/client?reload=true',
+    main: path.join(__dirname, 'src/app.js'),
+    vendor: [ 'jquery', 'leaflet', 'leaflet-draw' ]
+  },
   output: {
     path: path.join(__dirname, '/public/'),
     filename: '[name].js',
@@ -33,6 +37,7 @@ module.exports = {
   //   progress: true
   // },
   plugins: [
+    new webpack.optimize.CommonsChunkPlugin({ name: 'vendor', filename: 'vendor.bundle.js' }),
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery',

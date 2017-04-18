@@ -24,9 +24,7 @@ export default SelectView.extend({
         answer => {
           if (!answer) return
 
-          App.state.settlements.add({
-            nombre: answer
-          })
+          App.state.settlements.add({nombre: answer})
           buttonElement.focus()
         }
       )

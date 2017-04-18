@@ -21,27 +21,56 @@ App.extend({
   Navbar: null,
   Map: null,
   mostlyLoaded: false,
+  config: {},
   init: function () {
     App.progress.start()
     App.Navbar = this.createNavbarView()
-    loadLayers()
-      .then(() => {
-        App.progress.inc()
-        App.Map = this.createMapView()
-        if (App.mostlyLoaded) {
-          App.progress.done()
-        } else {
-          App.mostlyLoaded = true
-          App.progress.inc()
+    const prevState = window.localStorage.getItem('globalState')
+    if (prevState) {
+      bootbox.confirm({
+        title: 'Restaurar sesion?',
+        message: 'Desea restaurar los datos de la ultima sesion?',
+        callback: (yes) => {
+          if (yes) {
+            const stateObject = JSON.parse(prevState)
+            const locs = App.state.localidades
+            App.state = new GlobalState(stateObject)
+            App.state.localidades = locs
+          }
+          this.initMapPage()
         }
       })
-      // .then(() => {
-      //   loadGeocoder()
-      // })
-      .catch(error => {
-        console.log(error)
-        bootbox.alert('No se pudo inicializar el mapa, por favor vuelva a cargar la pagina')
-      })
+    } else {
+      window.localStorage.clear()
+      this.initMapPage()
+    }
+  },
+  bindState: function () {
+    console.log('bind them')
+    App.state.on('change', () => {
+      window.localStorage.setItem('globalState', JSON.stringify(App.state.toJSON()))
+    })
+  },
+  initMapPage: function () {
+    loadLayers()
+    .then(() => {
+      App.progress.inc()
+      App.Map = this.createMapView()
+      if (App.mostlyLoaded) {
+        App.progress.done()
+      } else {
+        App.mostlyLoaded = true
+        App.progress.inc()
+      }
+      this.bindState()
+    })
+    // .then(() => {
+    //   loadGeocoder()
+    // })
+    .catch(error => {
+      console.warn(error)
+      bootbox.alert('No se pudo inicializar el mapa, por favor vuelva a cargar la pagina')
+    })
   },
   createNavbarView: function () {
     if (App.Navbar) {

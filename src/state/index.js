@@ -1,28 +1,28 @@
 import State from 'ampersand-state'
 import { Collection as Settlements } from 'model/settlement'
-import { Collection as Lots } from 'model/lot'
-// import { Collection as Cultivos } from 'model/cultivo'
-// import { Collection as TipoCultivos } from 'model/tipo-cultivo'
+// import { Collection as Lots } from 'model/lot'
+import { Collection as Cultivos } from 'model/cultivo'
+import { Collection as TipoCultivos } from 'model/tipo-cultivo'
 import cultivos from 'model/cultivo-data.json'
 import tipocultivos from 'model/tipo-cultivo-data.json'
 
-import mapModel from 'model/map'
+import Map from 'model/map'
 
 const Global = State.extend({
   extraProperties: 'allow',
   props: {
     // maplibsready: [ 'boolean', false, false ],
-    features: ['array', false, () => []],
+    featureCollection: ['object', false, () => { return {type: 'FeatureCollection', features: []} }],
     user: ['object', false, () => { return {} }],
-    mapstate: [ 'object', false, () => mapModel() ]
+    mapstate: [ 'object', false, () => Map.model ]
   },
   session: {
-    cultivos: [ 'array', false, () => cultivos ],
-    tipoCultivos: [ 'array', false, () => tipocultivos ],
+    cultivos: [ 'array', false, () => new Cultivos(cultivos) ],
+    tipoCultivos: [ 'array', false, () => new TipoCultivos(tipocultivos) ],
     localidades: 'array'
   },
   collections: {
-    lots: Lots, // aka features
+    // lots: Lots, // aka features
     settlements: Settlements
   }
 })
