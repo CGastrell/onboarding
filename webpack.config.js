@@ -19,7 +19,7 @@ module.exports = {
   // devtool: 'eval-source-map',
   entry: {
     main: './src/app.js',
-    vendor: ['jquery', 'leaflet']
+    vendor: ['jquery', 'leaflet', 'leaflet-draw']
   },
   output: {
     path: path.join(__dirname, '/public/'),
@@ -76,7 +76,13 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
-        query: JSON.stringify({ presets: [ [ 'es2015', { modules: false } ], 'stage-0', 'env' ] })
+        options: {
+          presets: [
+            [ 'es2015', { modules: false } ],
+            'stage-0',
+            'env'
+          ]
+        }
       },
       {
         test: /\.(otf|eot|svg|ttf|woff)/,
