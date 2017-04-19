@@ -6,7 +6,8 @@ import LotForm from 'components/lot-form'
 import geojsonRewind from 'geojson-rewind'
 import App from 'ampersand-app'
 
-import 'leaflet-draw'
+import 'leaflet-draw/dist/leaflet.draw-src'
+
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-draw/dist/leaflet.draw-src.css'
 
