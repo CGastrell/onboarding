@@ -14,6 +14,9 @@ export default {
         id_tipo_cultivo: 0,
         productos: [],
         id_localidad: 0,
+        mol: false,
+        axa: false,
+        cosecha: false,
         // geo stuff
         area: 0,
         perimeter: 0
