@@ -4,6 +4,7 @@ import InputView from 'components/input-view'
 import TypeaheadView from 'components/input-view/typeahead'
 import CustomSelectView from './select-with-buttons-view'
 import SelectView from 'components/select-view'
+import CheckboxView from 'components/checkbox-view'
 
 // import TagsInputView from 'components/input-view/tagsinput'
 // import 'styles/bootstrap-tagsinput.css'
@@ -62,7 +63,7 @@ export default FormView.extend({
       new TypeaheadView({
         name: 'localidad',
         label: 'Localidad',
-        placeholder: 'Comience a tipear',
+        placeholder: 'Escriba el nombre de una localidad',
         required: true,
         requiredMessage: 'Debe seleccionar una localidad de la lista',
         value: this.datamodel.localidad,
@@ -88,7 +89,23 @@ export default FormView.extend({
             return ''
           }
         ]
+      }),
+      new CheckboxView({
+        name: 'axa',
+        label: 'Ambientacion',
+        value: this.datamodel.axa
+      }),
+      new CheckboxView({
+        name: 'mol',
+        label: 'Monitoreo OnLine',
+        value: this.datamodel.mol
+      }),
+      new CheckboxView({
+        name: 'cosecha',
+        label: 'Cosecha',
+        value: this.datamodel.cosecha
       })
+
       // no lo pude hacer andar
       // new TagsInputView({
       //   name: 'id_localidad2',
@@ -108,5 +125,10 @@ export default FormView.extend({
       // })
     ]
     FormView.prototype.initialize.apply(this, arguments)
+  },
+  render: function () {
+    FormView.prototype.render.apply(this, arguments)
+
+    setTimeout(() => this.query('input').focus(), 250)
   }
 })

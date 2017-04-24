@@ -4,17 +4,17 @@ import L from 'leaflet'
 
 export default AmpersandView.extend({
   template: `
-  <div data-hook="lot-form" class="clearfix">
-    <div data-hook="form-container" class="col-md-6"></div>
-    <div data-hook="side-info" class="col-md-6">
-    <dl>
-      <dt>Superficie</dt>
-      <dd><var data-hook="superficie">lotname</var> has</dd>
-      <dt>Per&iacute;metro</dt>
-      <dd><var data-hook="perimetro">lotname</var> m</dd>
-    </dl>
-    </div>
-  </div>`,
+    <div data-hook="lot-form" class="clearfix">
+      <div data-hook="form-container" class="col-md-6"></div>
+      <div data-hook="side-info" class="col-md-6">
+        <dl>
+          <dt>Superficie</dt>
+          <dd><var data-hook="superficie">lotname</var> has</dd>
+          <dt>Per&iacute;metro</dt>
+          <dd><var data-hook="perimetro">lotname</var> m</dd>
+        </dl>
+      </div>
+    </div>`,
   props: {
     layer: [ 'object', true ]
   },
@@ -51,14 +51,6 @@ export default AmpersandView.extend({
       }
     }
   },
-  initialize: function () {
-
-  },
-  // events: {
-  //   'click .btn-danger': function () {
-  //     console.log('macarena')
-  //   }
-  // },
   subviews: {
     form: {
       hook: 'form-container',
