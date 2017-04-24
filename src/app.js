@@ -19,36 +19,69 @@ App.extend({
   state: new GlobalState(),
   progress: NProgress,
   Navbar: null,
+  stateAnyway: false, // just a flag from leafletDraw event
   Map: null,
   mostlyLoaded: false,
   config: {},
   init: function () {
     App.progress.start()
     App.Navbar = this.createNavbarView()
-    const prevState = window.localStorage.getItem('globalState')
+    const prevState = this.getLastState()
     if (prevState) {
       bootbox.confirm({
         title: 'Restaurar sesion?',
         message: 'Desea restaurar los datos de la ultima sesion?',
         callback: (yes) => {
           if (yes) {
-            const stateObject = JSON.parse(prevState)
             const locs = App.state.localidades
-            App.state = new GlobalState(stateObject)
+            App.state = new GlobalState(prevState)
             App.state.localidades = locs
+          } else {
+            window.localStorage.clear()
           }
           this.initMapPage()
         }
       })
     } else {
-      window.localStorage.clear()
       this.initMapPage()
     }
   },
+  getLastState: function () {
+    const state = window.localStorage.getItem('globalState')
+    if (!state) return false
+    let stateObject = false
+    try {
+      stateObject = JSON.parse(state)
+    } catch (ex) {
+      console.warn(ex)
+    }
+    // delete lastState if no features
+    if (
+      !stateObject.featureCollection ||
+      !stateObject.featureCollection.features ||
+      !stateObject.featureCollection.features.length
+    ) {
+      window.localStorage.clear()
+      return false
+    }
+    return stateObject
+  },
   bindState: function () {
     console.log('bind them')
-    App.state.on('change', () => {
-      window.localStorage.setItem('globalState', JSON.stringify(App.state.toJSON()))
+    App.state.on('change', (state, data) => {
+      console.log('state change')
+
+      if (!App.stateAnyway && !App.state.featureCollection) return
+      if (!App.stateAnyway && !App.state.featureCollection.features) return
+      if (!App.stateAnyway && !App.state.featureCollection.features.length) return
+
+      // if user has deleted all features, reset localStorage
+      if (App.state.featureCollection.features.length === 0) {
+        window.localStorage.clear()
+      } else {
+        window.localStorage.setItem('globalState', JSON.stringify(App.state.toJSON()))
+      }
+      App.stateAnyway = false
     })
   },
   initMapPage: function () {

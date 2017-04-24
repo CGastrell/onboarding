@@ -104,7 +104,7 @@ export default View.extend({
 
     // _leaflet_id only exists once the layer is on the map
     layer.feature.properties.id = layer._leaflet_id
-    this.updateFeatures()
+    this.updateFeatures({type: L.Draw.Event.CREATED})
     this.openPolygonModal({target: layer})
   },
   updateState: function (event) {
@@ -113,8 +113,13 @@ export default View.extend({
       zoom: event.target.getZoom()
     }
   },
-  updateFeatures: function () {
-    App.state.featureCollection = this.drawLayer.toGeoJSON()
+  updateFeatures: function (event) {
+    console.log(event)
+    const featureCollection = this.drawLayer.toGeoJSON()
+    if (event.type === L.Draw.Event.DELETED && !featureCollection.features.length) {
+      App.stateAnyway = true
+    }
+    App.state.featureCollection = featureCollection
   },
   rewind: function (layer) {
     let gj = layer.toGeoJSON()
@@ -180,7 +185,7 @@ export default View.extend({
           return false
         }
         layer.feature.properties = Object.assign({}, feature.properteis, this.lotForm.form.data)
-        this.updateFeatures()
+        this.updateFeatures({type: null})
         this.lotForm.remove()
       }
     )
