@@ -27,9 +27,6 @@ module.exports = InputView.extend({
     this.validate = this.beforeSubmit.bind(this)
     this.styles += ' amp-input'
   },
-  events: {
-    'blur input': 'validate'
-  },
   bindings: extend({}, InputView.prototype.bindings, {
     styles: {
       type: 'attribute',
