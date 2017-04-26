@@ -27,6 +27,7 @@ export default FormView.extend({
         name: 'nombre',
         label: 'Nombre',
         value: this.datamodel.nombre,
+        styles: 'form-group',
         required: true,
         invalidClass: 'text-danger',
         validityClassSelector: '.control-label'
@@ -34,9 +35,10 @@ export default FormView.extend({
       new CustomSelectView({
         name: 'settlement',
         label: 'Establecimiento',
+        value: this.datamodel.settlement,
+        styles: 'form-group',
         required: true,
         requiredMessage: 'Debe seleccionar un establecimiento',
-        value: this.datamodel.settlement,
         invalidClass: 'text-danger',
         options: App.state.settlements,
         yieldModel: false,
@@ -47,9 +49,10 @@ export default FormView.extend({
       new SelectView({
         name: 'id_tipo_cultivo',
         label: 'Cultivo',
+        value: this.datamodel.id_cultivo,
+        styles: 'form-group',
         required: true,
         requiredMessage: 'Necesita especificar un cultivo',
-        value: this.datamodel.id_cultivo,
         invalidClass: 'text-danger',
         options: App.state.tipoCultivos,
         yieldModel: false,
@@ -63,10 +66,11 @@ export default FormView.extend({
       new TypeaheadView({
         name: 'localidad',
         label: 'Localidad',
+        value: this.datamodel.localidad,
+        styles: 'form-group',
         placeholder: 'Escriba el nombre de una localidad',
         required: true,
         requiredMessage: 'Debe seleccionar una localidad de la lista',
-        value: this.datamodel.localidad,
         invalidClass: 'text-danger',
         options: App.state.localidades,
         idAttribute: 'id_localidad',
@@ -92,18 +96,23 @@ export default FormView.extend({
       }),
       new CheckboxView({
         name: 'axa',
-        label: 'Ambientacion',
+        label: 'Ambientación',
         value: this.datamodel.axa
       }),
       new CheckboxView({
         name: 'mol',
-        label: 'Monitoreo OnLine',
+        label: 'Monitoreo Online',
         value: this.datamodel.mol
       }),
       new CheckboxView({
         name: 'cosecha',
-        label: 'Cosecha',
+        label: 'Mapa de Rinde',
         value: this.datamodel.cosecha
+      }),
+      new CheckboxView({
+        name: 'prescripcion',
+        label: 'Prescripción',
+        value: this.datamodel.prescripcion
       })
 
       // no lo pude hacer andar

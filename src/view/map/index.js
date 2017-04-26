@@ -51,7 +51,6 @@ export default View.extend({
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     })
     this.drawLayer = new L.GeoJSON()
-    console.log(App.state.mapstate)
     this.map = L.map(this.el, {
       layers: [this.drawLayer, this.hybridLayer],
       center: [ App.state.mapstate.center.lat, App.state.mapstate.center.lng ],
@@ -82,7 +81,7 @@ export default View.extend({
       App.state.featureCollection.features.forEach(feature => {
         const layer = L.geoJSON(feature)
         layer.eachLayer(l => {
-          l.setLatLngs(this.rewind(l))
+          // l.setLatLngs(this.rewind(l))
           l.on('click', this.openPolygonModal, this)
           this.drawLayer.addLayer(l)
         })
@@ -95,15 +94,15 @@ export default View.extend({
     const layer = event.layer
     layer.feature = layer.feature || Lot.model
     // rewind layer points to avoid problems later
-    layer.setLatLngs(this.rewind(layer))
+    // layer.setLatLngs(this.rewind(layer))
     layer.feature.properties.area = this.getPolygonArea(layer)
     layer.feature.properties.perimeter = this.getPolygonPerimeter(layer)
-    layer.on('click', this.openPolygonModal, this)
+    // layer.on('click', this.openPolygonModal, this)
 
     this.drawLayer.addLayer(layer)
 
     // _leaflet_id only exists once the layer is on the map
-    layer.feature.properties.id = layer._leaflet_id
+    // layer.feature.properties.id = layer._leaflet_id
     this.updateFeatures({type: L.Draw.Event.CREATED})
     this.openPolygonModal({target: layer})
   },
@@ -114,12 +113,21 @@ export default View.extend({
     }
   },
   updateFeatures: function (event) {
-    console.log(event)
     const featureCollection = this.drawLayer.toGeoJSON()
     if (event.type === L.Draw.Event.DELETED && !featureCollection.features.length) {
       App.stateAnyway = true
     }
-    App.state.featureCollection = featureCollection
+    App.state.featureCollection = geojsonRewind(featureCollection)
+    this.drawLayer.clearLayers()
+
+    const reAdd = layer => {
+      layer.addTo(this.drawLayer)
+      layer.feature.properties.id = layer._leaflet_id
+      layer.on('click', this.openPolygonModal, this)
+    }
+    // temp layer to rebuild the drawLayer
+    L.geoJSON(App.state.featureCollection)
+      .eachLayer(reAdd)
   },
   rewind: function (layer) {
     let gj = layer.toGeoJSON()
@@ -154,7 +162,7 @@ export default View.extend({
     }
   },
   openPolygonModal: function (event) {
-    window.eee = event
+    console.log(event.target._leaflet_id, event.target.feature.properties.id)
     if (this.drawControl._toolbars.edit._modes.remove.handler._enabled) {
       return
     }
@@ -173,10 +181,10 @@ export default View.extend({
         title: 'Datos del lote'
       },
       save => {
-        console.log('save callback:')
-        console.log(save)
         if (!save) return
-
+        this.lotForm.formView.fields.forEach(fieldView => {
+          if ('validate' in fieldView) fieldView.validate()
+        })
         if (!this.lotForm.formView.valid) {
           bootbox.alert({
             title: 'Validacion de datos',
@@ -184,7 +192,7 @@ export default View.extend({
           })
           return false
         }
-        layer.feature.properties = Object.assign({}, feature.properteis, this.lotForm.form.data)
+        layer.feature.properties = Object.assign({}, feature.properties, this.lotForm.formView.data)
         this.updateFeatures({type: null})
         this.lotForm.remove()
       }

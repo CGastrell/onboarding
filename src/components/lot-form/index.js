@@ -1,6 +1,8 @@
 import AmpersandView from 'ampersand-view'
 import LotForm from './lot-form'
 import L from 'leaflet'
+import ReportView from 'components/report'
+import bootbox from 'components/bootbox'
 
 export default AmpersandView.extend({
   template: `
@@ -13,8 +15,31 @@ export default AmpersandView.extend({
           <dt>Per&iacute;metro</dt>
           <dd><var data-hook="perimetro">lotname</var> m</dd>
         </dl>
+        <button data-hook="report" class="btn btn-success btn-lg btn-block">Ver resumen</button>
       </div>
     </div>`,
+  events: {
+    'click [data-hook="report"]': function (event) {
+      const report = new ReportView()
+      report.render()
+      bootbox.confirm({
+        title: 'Reporte',
+        message: report.el,
+        buttons: {
+          cancel: {
+            label: 'Cerrar'
+          },
+          confirm: {
+            label: 'Presupuestar',
+            className: 'btn-success'
+          }
+        },
+        callback: ask => {
+          console.log('ask for a presupuesto senior:', ask)
+        }
+      })
+    }
+  },
   props: {
     layer: [ 'object', true ]
   },
