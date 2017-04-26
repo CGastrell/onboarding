@@ -27,7 +27,7 @@ export default SelectView.extend({
     this.setValue(value)
   },
   template: `
-    <div data-hook="styles">
+    <div>
       <label data-hook="label" class="control-label"></label>
       <select class="form-control select"></select>
       <div data-hook="message-container">
@@ -46,8 +46,7 @@ export default SelectView.extend({
     }],
     styles: {
       type: 'attribute',
-      name: 'class',
-      hook: 'styles'
+      name: 'class'
     }
   })
 })

@@ -40,7 +40,6 @@ export default InputView.extend({
     value: {
       deps: ['tagsinput'],
       fn: function () {
-        console.log(this.tagsinput)
         return this.tagsinput
       }
     }

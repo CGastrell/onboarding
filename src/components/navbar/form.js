@@ -20,9 +20,6 @@ export default View.extend({
     dataLoaded: ['boolean', false, false]
   },
   template: template,
-  initialize: function () {
-    console.log('form')
-  },
   bindings: {
     dataLoaded: {
       type: 'toggle'
@@ -37,7 +34,6 @@ export default View.extend({
       .then(json => {
         App.state.localidades = json
         this.dataLoaded = true
-        console.log('resolved locs')
         App.progress.inc()
         $input.typeahead({
           source: App.state.localidades,

@@ -11,8 +11,6 @@ import bootbox from 'bootbox'
 import GlobalState from 'state'
 import 'styles/main.css'
 
-console.log('initializing app')
-
 window.app = App
 
 App.extend({
@@ -67,10 +65,8 @@ App.extend({
     return stateObject
   },
   bindState: function () {
-    console.log('bind them')
     App.state.on('change', (state, data) => {
       console.log('state change')
-
       if (!App.stateAnyway && !App.state.featureCollection) return
       if (!App.stateAnyway && !App.state.featureCollection.features) return
       if (!App.stateAnyway && !App.state.featureCollection.features.length) return

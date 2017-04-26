@@ -17,6 +17,7 @@ export default {
         mol: false,
         axa: false,
         cosecha: false,
+        prescripcion: false,
         // geo stuff
         area: 0,
         perimeter: 0

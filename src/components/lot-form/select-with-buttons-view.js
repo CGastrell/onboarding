@@ -4,7 +4,7 @@ import bootbox from 'components/bootbox'
 
 export default SelectView.extend({
   template: `
-    <div data-hook="styles">
+    <div>
       <label data-hook="label" class="control-label"></label>
       <div class="input-group">
         <select class="form-control comboselect"></select>
