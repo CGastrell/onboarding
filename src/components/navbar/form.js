@@ -34,7 +34,6 @@ export default View.extend({
       .then(response => response.json())
       .then(json => {
         App.state.localidades = json
-        this.dataLoaded = true
         App.progress.inc()
         this.initializeTypeAhead()
       })
@@ -58,6 +57,9 @@ export default View.extend({
       App.mostlyLoaded = true
       App.progress.inc()
     }
+    // the toggle is done here so it only takes effect
+    // after data loading
+    this.dataLoaded = true
 
     this.$input.change(function (event) {
       const current = self.$input.typeahead('getActive')
