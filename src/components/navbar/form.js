@@ -3,8 +3,6 @@ import L from 'leaflet'
 import App from 'ampersand-app'
 import $ from 'jquery'
 
-import NProgress from 'nprogress'
-
 import flatten from 'geojson-flatten'
 import 'bootstrap-3-typeahead'
 
@@ -28,39 +26,47 @@ export default View.extend({
   render: function () {
     this.renderWithTemplate(this)
     const input = this.query('input')
-    const $input = $(input)
-    window.fetch('localidades.json')
+    this.$input = $(input)
+    if (App.state.localidades && App.state.localidades.length) {
+      this.initializeTypeAhead()
+    } else {
+      window.fetch('localidades.json')
       .then(response => response.json())
       .then(json => {
         App.state.localidades = json
         this.dataLoaded = true
         App.progress.inc()
-        $input.typeahead({
-          source: App.state.localidades,
-          autoSelect: false,
-          displayText: function (item) {
-            return (typeof item !== 'undefined' && typeof item.localidad !== 'undefined' && item.localidad) || item
-          }
-        })
-        if (App.mostlyLoaded) {
-          App.progress.done()
-        } else {
-          App.mostlyLoaded = true
-          App.progress.inc()
-        }
-
-        $input.change(function (event) {
-          const current = $input.typeahead('getActive')
-          if (current) {
-            if (current.localidad === $input.val()) {
-              const gjson = new L.GeoJSON(flatten(current.geometry))
-              App.Map.map.setView(gjson.getBounds().getCenter(), 12)
-            }
-          }
-        })
+        this.initializeTypeAhead()
       })
       .catch(error => {
         console.warn(error)
       })
+    }
+  },
+  initializeTypeAhead: function () {
+    var self = this
+    this.$input.typeahead({
+      source: App.state.localidades,
+      autoSelect: false,
+      displayText: function (item) {
+        return (typeof item !== 'undefined' && typeof item.localidad !== 'undefined' && item.localidad) || item
+      }
+    })
+    if (App.mostlyLoaded) {
+      App.progress.done()
+    } else {
+      App.mostlyLoaded = true
+      App.progress.inc()
+    }
+
+    this.$input.change(function (event) {
+      const current = self.$input.typeahead('getActive')
+      if (current) {
+        if (current.localidad === self.$input.val()) {
+          const gjson = new L.GeoJSON(flatten(current.geometry))
+          App.Map.map.setView(gjson.getBounds().getCenter(), 12)
+        }
+      }
+    })
   }
 })
