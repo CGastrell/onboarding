@@ -31,18 +31,23 @@ App.extend({
         message: 'Desea restaurar los datos de la ultima sesion?',
         callback: (yes) => {
           if (yes) {
-            const locs = App.state.localidades
+            prevState.localidades = App.state.localidades
             App.state = new GlobalState(prevState)
-            App.state.localidades = locs
           } else {
             window.localStorage.clear()
           }
-          this.initMapPage()
+          // as global state is changed, views need reinitialization
+          // specially navbar which holds the user menu
+          this.initializeViews()
         }
       })
     } else {
       this.initMapPage()
     }
+  },
+  initializeViews: function () {
+    App.Navbar = this.initNavbar()
+    App.Map = this.initMapPage()
   },
   getLastState: function () {
     const state = window.localStorage.getItem('globalState')
@@ -81,6 +86,9 @@ App.extend({
     })
   },
   initMapPage: function () {
+    if (App.Map) {
+      App.Map.remove()
+    }
     loadLayers()
     .then(() => {
       App.progress.inc()
@@ -98,13 +106,16 @@ App.extend({
     // })
     .catch(error => {
       console.warn(error)
-      bootbox.alert('No se pudo inicializar el mapa, por favor vuelva a cargar la pagina')
+      bootbox.alert('No se pudo inicializar el mapa, por favor vuelva a cargar la página')
     })
   },
-  createNavbarView: function () {
+  initNavbar: function () {
     if (App.Navbar) {
       App.Navbar.remove()
     }
+    return this.createNavbarView()
+  },
+  createNavbarView: function () {
     const nav = new Navbar()
     const navbarContainer = document.getElementById('navbar-container')
     navbarContainer.appendChild(nav.el)
@@ -122,7 +133,6 @@ App.extend({
   cleanMapElement: function () {
     if (App.Map && App.Map.remove) {
       App.Map.remove()
-      // document.getElementById('map-container').remove()
     }
     const el = document.createElement('div')
     el.id = 'map-container'
