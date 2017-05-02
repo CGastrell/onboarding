@@ -39,7 +39,6 @@ export default View.extend({
     this.onCreated = this.onCreated.bind(this)
   },
   render: function () {
-    window.aaa = this
     this.renderWithTemplate(this)
     this.setupMap()
   },
