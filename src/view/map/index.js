@@ -17,7 +17,7 @@ const drawDefaultOptions = {
     featureGroup: null,
     poly: {
       allowIntersection: false
-    },
+    }
     // remove: false
   },
   draw: {
