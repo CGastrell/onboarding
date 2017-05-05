@@ -2,6 +2,7 @@ import App from 'ampersand-app'
 import View from 'ampersand-view'
 import NavbarForm from './form'
 import UserMenu from './user-menu'
+import LoginButton from './login-button'
 import 'bootstrap/js/dropdown'
 import 'bootstrap/js/collapse'
 
@@ -18,6 +19,8 @@ const template = `
       <a class="navbar-brand" href="#">Frontec</a>
     </div>
     <div id="nav1" class="collapse navbar-collapse" data-hook="navbar-collapse">
+      <ul class="nav navbar-nav navbar-right" data-hook="user-menu">
+      </ul>
     </div>
   </div>
 </nav>`
@@ -31,9 +34,17 @@ export default View.extend({
       constructor: NavbarForm
     },
     userMenu: {
-      hook: 'navbar-collapse',
+      hook: 'user-menu',
       prepareView: function (el) {
         return new UserMenu({
+          model: App.state.user
+        })
+      }
+    },
+    loginButton: {
+      hook: 'user-menu',
+      prepareView: function (el) {
+        return new LoginButton({
           model: App.state.user
         })
       }
