@@ -10,21 +10,22 @@ const createFormModal = function (options, callback) {
     return callback(true) && true
   }
   options = options || {}
+  const buttons = options.buttons || [
+    {
+      label: 'Cerrar',
+      className: 'btn btn-default',
+      callback: closeCallback
+    },
+    {
+      label: 'Guardar',
+      className: 'btn btn-primary',
+      callback: saveCallback
+    }
+  ]
   var modal = bootbox2.dialog({
     message: options.message,
     title: options.title,
-    buttons: [
-      {
-        label: 'Cerrar',
-        className: 'btn btn-default',
-        callback: closeCallback
-      },
-      {
-        label: 'Guardar',
-        className: 'btn btn-primary',
-        callback: saveCallback
-      }
-    ],
+    buttons: buttons,
     onEscape: closeCallback
   })
 
