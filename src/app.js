@@ -1,7 +1,8 @@
 import App from 'ampersand-app'
 import Navbar from 'components/navbar'
 import MapView from 'view/map'
-import { loadLayers, loadGeocoder } from 'mapquest-loader'
+import { loadLayers, loadGeocoder } from 'lib/mapquest-loader'
+import fetch from 'lib/fetch'
 
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -21,6 +22,7 @@ App.extend({
   Map: null,
   mostlyLoaded: false,
   config: {},
+  fetch: fetch,
   init: function () {
     App.progress.start()
     App.Navbar = this.createNavbarView()
@@ -36,6 +38,7 @@ App.extend({
           } else {
             window.localStorage.clear()
           }
+          this.bindState()
           // as global state is changed, views need reinitialization
           // specially navbar which holds the user menu
           this.initializeViews()
@@ -99,7 +102,7 @@ App.extend({
         App.mostlyLoaded = true
         App.progress.inc()
       }
-      this.bindState()
+      // this.bindState()
     })
     // .then(() => {
     //   loadGeocoder()
