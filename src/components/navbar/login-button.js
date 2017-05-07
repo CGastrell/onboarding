@@ -1,8 +1,8 @@
 import View from 'ampersand-view'
-import App from 'ampersand-app'
 import bootbox from 'components/bootbox'
+import LoginForm from 'components/login-form'
 
-const template = `<li><a href="login" data-hook="login">Link</a></li>`
+const template = `<li><a href="login" data-hook="login">Ingresar</a></li>`
 
 export default View.extend({
   // autoRender: true, // a subview with autoRender won't work
@@ -24,46 +24,20 @@ export default View.extend({
   events: {
     'click a[data-hook=login]': function (event) {
       event.preventDefault()
-      const loginForm = new LoginForm()
-      loginForm.render()
-      const formCallback = save => {
-        console.log('argument callback')
-        console.log(save)
-        // event.preventDefault()
-        const user = loginForm.el.querySelector('#inputEmail').value
-        const pass = loginForm.el.querySelector('#inputPassword').value
-        console.log(user, pass)
+      this.loginForm = new LoginForm({parent: this})
+      this.loginForm.render()
 
-        // validation should run here and return
-        // callback(true/false) accordingly
-        if (user === '' || pass === '') {
-          return false
-        }
-      }
-      bootbox.form({
-        title: 'Login/register',
-        message: loginForm.el,
-        buttons: [
-          // {
-          //   label: 'Ingresar / crear cuenta',
-          //   className: 'btn btn-primary btn-block',
-          //   callback: event => { return formCallback(true) && true }
-          // }
-        ]
-      }, formCallback)
+      this.loginModal = bootbox.dialog({
+        title: 'Cree una cuenta o ingrese sus credenciales',
+        message: this.loginForm.el,
+        buttons: [],
+        onEscape: true,
+        closeButton: true
+      })
+      const self = this
+      this.loginModal.on('hide.bs.modal', function (event) {
+        self.loginForm.remove()
+      })
     }
   }
-})
-
-const LoginForm = View.extend({
-  template: `
-    <form class="form-signin">
-      <h2 class="form-signin-heading">Registrarse/ingresar</h2>
-      <label for="inputEmail" class="sr-only">Correo electronico</label>
-      <input type="email" id="inputEmail" class="form-control" placeholder="alguien@algo.com" required autofocus>
-      <label for="inputPassword" class="sr-only">Password</label>
-      <input type="password" id="inputPassword" class="form-control" placeholder="password" required>
-      <hr class="separator" />
-      <a class="btn btn-primary btn-block">Ingresar / crear cuenta</a>
-    </form>`
 })

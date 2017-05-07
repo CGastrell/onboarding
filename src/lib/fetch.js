@@ -1,3 +1,6 @@
+import App from 'ampersand-app'
+import merge from 'lodash/merge'
+
 const fetchOptions = {
   headers: {
     'Accept': 'application/json',
@@ -13,23 +16,51 @@ function toBase64 (string) {
 }
 
 export default {
-  post: function (url, options = {}) {
-    const postOptions = Object.assign(
+  _fetch: function (url, options) {
+    const reqOptions = merge(
       {},
       options,
-      fetchOptions,
-      { method: 'post' }
+      fetchOptions // defaults no-override
     )
-    console.log(postOptions)
-    return window.fetch(`${apiBaseUrl}${url}`, postOptions)
+    return window.fetch(`${apiBaseUrl}${url}`, reqOptions)
+  },
+  _bearerHeader: function () {
+    return {
+      'Authorization': `Bearer ${App.state.user.token}`
+    }
+  },
+  get: function (url, options = {}) {
+    const getOptions = merge(
+      {},
+      options,
+      {
+        method: 'get',
+        headers: this._bearerHeader()
+      }
+    )
+    return this._fetch(url, getOptions)
+  },
+  post: function (url, options = {}, basic = false) {
+    const postOptions = merge(
+      {},
+      options,
+      {
+        method: 'post',
+        headers: basic ? {} : this._bearerHeader()
+      }
+    )
+    return this._fetch(url, postOptions)
   },
   login: function (user, pass) {
-    const localOptions = Object.assign({}, fetchOptions, { method: 'post' })
-    localOptions.headers.Authorization = 'Basic ' + toBase64(user + ':' + pass)
-    return window.fetch(`${apiBaseUrl}/token`, localOptions)
+    const localOptions = {
+      headers: {
+        Authorization: 'Basic ' + toBase64(user + ':' + pass)
+      }
+    }
+    return this.post('/token', localOptions, true)
   },
-  register: function (data) {
-    const endpoint = `${apiBaseUrl}/onboarding/register`
-    return window.fetch(endpoint)
+  register: function (user, pass) {
+    const localOptions = {body: JSON.stringify({email: user, password: pass})}
+    return this.post('/onboarding/register', localOptions, true)
   }
 }
