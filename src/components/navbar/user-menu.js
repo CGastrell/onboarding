@@ -1,10 +1,11 @@
 import View from 'ampersand-view'
-import App from 'ampersand-app'
+import AuthActions from 'actions/auth'
 
 const template = `
   <li class="dropdown">
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span data-hook="label">Dropdown</span> <span class="caret"></span></a>
     <ul class="dropdown-menu">
+      <li><a href="#">Reporte</a></li>
       <li role="separator" class="divider"></li>
       <li><a href="logout" data-hook="logout">Salir</a></li>
     </ul>
@@ -18,10 +19,19 @@ export default View.extend({
       fn: function () {
         return Boolean(this.model.token)
       }
+    },
+    label: {
+      deps: ['model.email'],
+      fn: function () {
+        return this.model.email
+      }
     }
   },
   template: template,
   bindings: {
+    label: {
+      hook: 'label'
+    },
     visible: {
       type: 'toggle'
     }
@@ -29,7 +39,7 @@ export default View.extend({
   events: {
     'click a[data-hook=logout]': function (event) {
       event.preventDefault()
-      App.state.user.clear()
+      AuthActions.logout()
     }
   },
   render: function () {

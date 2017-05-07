@@ -2,6 +2,7 @@ import View from 'ampersand-view'
 import L from 'leaflet'
 import App from 'ampersand-app'
 import $ from 'jquery'
+import Actions from 'actions/localidades'
 
 import flatten from 'geojson-flatten'
 import 'bootstrap-3-typeahead'
@@ -24,22 +25,15 @@ export default View.extend({
     }
   },
   render: function () {
+    window.aaa = this
     this.renderWithTemplate(this)
     const input = this.query('input')
     this.$input = $(input)
     if (App.state.localidades && App.state.localidades.length) {
       this.initializeTypeAhead()
     } else {
-      window.fetch('localidades.json')
-      .then(response => response.json())
-      .then(json => {
-        App.state.localidades = json
-        App.progress.inc()
-        this.initializeTypeAhead()
-      })
-      .catch(error => {
-        console.warn(error)
-      })
+      Actions.fetchLocalidades()
+        .then(this.initializeTypeAhead.bind(this))
     }
   },
   initializeTypeAhead: function () {
@@ -51,12 +45,6 @@ export default View.extend({
         return (typeof item !== 'undefined' && typeof item.localidad !== 'undefined' && item.localidad) || item
       }
     })
-    if (App.mostlyLoaded) {
-      App.progress.done()
-    } else {
-      App.mostlyLoaded = true
-      App.progress.inc()
-    }
     // the toggle is done here so it only takes effect
     // after data loading
     this.dataLoaded = true

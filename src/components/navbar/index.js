@@ -37,7 +37,7 @@ export default View.extend({
       hook: 'user-menu',
       prepareView: function (el) {
         return new UserMenu({
-          model: App.state.user
+          model: App.user
         })
       }
     },
@@ -45,7 +45,7 @@ export default View.extend({
       hook: 'user-menu',
       prepareView: function (el) {
         return new LoginButton({
-          model: App.state.user
+          model: App.user
         })
       }
     }

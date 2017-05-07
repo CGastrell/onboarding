@@ -53,6 +53,7 @@
     "style-loader": "^0.16.1",
     "typeahead.js": "^0.11.1",
     "url-loader": "^0.5.8",
+    "validator": "^7.0.0",
     "webpack": "^2.3.3",
     "webpack-bundle-analyzer": "^2.3.1",
     "webpack-dev-middleware": "^1.10.1",
