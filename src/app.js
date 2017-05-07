@@ -10,7 +10,12 @@ import 'nprogress/nprogress.css'
 import 'bootstrap/js/modal'
 import bootbox from 'bootbox'
 import GlobalState from 'state'
+import User from 'model/user'
 import 'styles/main.css'
+
+// import * as Actions from 'actions'
+// import { Auth } from 'actions'
+// import AuthActions from 'actions/auth'
 
 window.app = App
 
@@ -22,30 +27,49 @@ App.extend({
   Map: null,
   mostlyLoaded: false,
   config: {},
+  user: new User(),
   fetch: fetch,
-  init: function () {
-    App.progress.start()
-    App.Navbar = this.createNavbarView()
-    const prevState = this.getLastState()
+  init: function (state) { // reinicializar aca, cleanup por cada view, preservar locs
+    if (!App.progress.status) {
+      App.progress.start()
+    } else {
+      App.progress.inc()
+    }
+
+    let prevState = null
+
+    if (state) {
+      // if state is provided, set it as .state
+      // and continue initialization
+      const locs = state.localidades
+      if (state.isState) {
+        state = state.toJSON()
+      }
+      state.localidades = locs
+      App.state = new GlobalState(state)
+    } else {
+      prevState = this.getLastState()
+    }
+
+    App.progress.inc()
+
     if (prevState) {
       bootbox.confirm({
         title: 'Restaurar sesion?',
         message: 'Desea restaurar los datos de la ultima sesion?',
         callback: (yes) => {
           if (yes) {
-            prevState.localidades = App.state.localidades
-            App.state = new GlobalState(prevState)
+            App.init(prevState)
           } else {
             window.localStorage.clear()
+            this.bindState()
+            this.initializeViews()
           }
-          this.bindState()
-          // as global state is changed, views need reinitialization
-          // specially navbar which holds the user menu
-          this.initializeViews()
         }
       })
     } else {
-      this.initMapPage()
+      this.bindState()
+      this.initializeViews()
     }
   },
   initializeViews: function () {
