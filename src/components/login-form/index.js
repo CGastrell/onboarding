@@ -4,7 +4,7 @@ import isEmail from 'validator/lib/isEmail'
 import bootbox from 'components/bootbox'
 import './login-form.css'
 // import preloadingImage from './preloader.gif'
-import AuthActions from 'actions/auth'
+import { Auth as AuthActions, User as UserActions } from 'actions'
 
 export default View.extend({
   template: `
@@ -30,6 +30,8 @@ export default View.extend({
       }
 
       AuthActions.login(user, pass)
+        .then(UserActions.fetchUserData)
+
       this.parent.loginModal.modal('hide')
     }
   },
