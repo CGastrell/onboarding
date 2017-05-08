@@ -35,9 +35,6 @@ const drawDefaultOptions = {
 export default View.extend({
   autoRender: true,
   template: `<div id="map"></div>`,
-  initialize: function () {
-    this.onCreated = this.onCreated.bind(this)
-  },
   render: function () {
     this.renderWithTemplate(this)
     this.setupMap()
@@ -69,9 +66,9 @@ export default View.extend({
     this.drawControl = new L.Control.Draw(options).addTo(this.map)
 
     // keep the state current
-    this.map.on('moveend', this.updateState)
+    this.map.on('moveend', this.updateMapState)
 
-    this.map.on(L.Draw.Event.CREATED, this.onCreated)
+    this.map.on(L.Draw.Event.CREATED, this.onCreated.bind(this))
     this.map.on(L.Draw.Event.EDITED, this.updateFeatures.bind(this))
     this.map.on(L.Draw.Event.DELETED, this.updateFeatures.bind(this))
   },
@@ -80,7 +77,6 @@ export default View.extend({
       App.state.featureCollection.features.forEach(feature => {
         const layer = L.geoJSON(feature)
         layer.eachLayer(l => {
-          // l.setLatLngs(this.rewind(l))
           l.on('click', this.openPolygonModal, this)
           this.drawLayer.addLayer(l)
         })
@@ -91,21 +87,25 @@ export default View.extend({
     // event.target -> L.Map
     // event.layer -> L.Polygon (or proper geometry primitive)
     const layer = event.layer
+
     layer.feature = layer.feature || Lot.model
-    // rewind layer points to avoid problems later
-    // layer.setLatLngs(this.rewind(layer))
     layer.feature.properties.area = this.getPolygonArea(layer)
+    layer.feature.properties.bbox = layer.getBounds().toBBoxString()
     layer.feature.properties.perimeter = this.getPolygonPerimeter(layer)
-    // layer.on('click', this.openPolygonModal, this)
 
     this.drawLayer.addLayer(layer)
 
     // _leaflet_id only exists once the layer is on the map
     // layer.feature.properties.id = layer._leaflet_id
+
     this.updateFeatures({type: L.Draw.Event.CREATED})
-    this.openPolygonModal({target: layer})
+
+    // when features update, layer reference is lost
+    // if we want to open the modal, we'll have to figure out
+    // some way of tracking the layer
+    // this.openPolygonModal({target: layer})
   },
-  updateState: function (event) {
+  updateMapState: function (event) {
     App.state.mapstate = {
       center: Object.assign({}, event.target.getCenter()),
       zoom: event.target.getZoom()
@@ -113,10 +113,13 @@ export default View.extend({
   },
   updateFeatures: function (event) {
     const featureCollection = this.drawLayer.toGeoJSON()
+    App.state.featureCollection = {}
     if (event.type === L.Draw.Event.DELETED && !featureCollection.features.length) {
       App.stateAnyway = true
     }
+    console.log(featureCollection)
     App.state.featureCollection = geojsonRewind(featureCollection)
+
     this.drawLayer.clearLayers()
 
     const reAdd = layer => {
@@ -127,11 +130,6 @@ export default View.extend({
     // temp layer to rebuild the drawLayer
     L.geoJSON(App.state.featureCollection)
       .eachLayer(reAdd)
-  },
-  rewind: function (layer) {
-    let gj = layer.toGeoJSON()
-    gj = geojsonRewind(gj)
-    return L.geoJSON(gj).getLayers()[0].getLatLngs()
   },
   // returns the area in m2
   // TODO: oddity, the function is supposed to work with getLatLngs(),
@@ -150,18 +148,7 @@ export default View.extend({
     }
     return totalDistance
   },
-  // this is now performed by L.GeoJSON.toGeoJSON()
-  layerToGeoJSON: function (layer) {
-    const features = []
-    layer.eachLayer(collect)
-    function collect (l) { if ('toGeoJSON' in l) features.push(l.toGeoJSON()) }
-    return {
-      type: 'FeatureCollection',
-      features: features
-    }
-  },
   openPolygonModal: function (event) {
-    console.log(event.target._leaflet_id, event.target.feature.properties.id)
     if (this.drawControl._toolbars.edit._modes.remove.handler._enabled) {
       return
     }
@@ -192,8 +179,9 @@ export default View.extend({
           return false
         }
         layer.feature.properties = Object.assign({}, feature.properties, this.lotForm.formView.data)
+        console.log(layer.feature)
         this.updateFeatures({type: null})
-        this.lotForm.remove()
+        // this.lotForm.remove()
       }
     )
   }
