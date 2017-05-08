@@ -27,6 +27,7 @@ App.extend({
   Map: null,
   mostlyLoaded: false,
   config: {},
+  localidades: [],
   user: new User(),
   fetch: fetch,
   init: function (state) { // reinicializar aca, cleanup por cada view, preservar locs
@@ -41,11 +42,9 @@ App.extend({
     if (state) {
       // if state is provided, set it as .state
       // and continue initialization
-      const locs = state.localidades
       if (state.isState) {
         state = state.toJSON()
       }
-      state.localidades = locs
       App.state = new GlobalState(state)
     } else {
       prevState = this.getLastState()
@@ -55,13 +54,13 @@ App.extend({
 
     if (prevState) {
       bootbox.confirm({
-        title: 'Restaurar sesion?',
-        message: 'Desea restaurar los datos de la ultima sesion?',
+        title: 'Restaurar sesión?',
+        message: 'Desea restaurar los datos de su última sesión?',
         callback: (yes) => {
           if (yes) {
             App.init(prevState)
           } else {
-            window.localStorage.clear()
+            this.clearLocalData()
             this.bindState()
             this.initializeViews()
           }
@@ -75,6 +74,9 @@ App.extend({
   initializeViews: function () {
     App.Navbar = this.initNavbar()
     App.Map = this.initMapPage()
+  },
+  clearLocalData: function () {
+    window.localStorage.clear()
   },
   getLastState: function () {
     const state = window.localStorage.getItem('globalState')
@@ -105,7 +107,7 @@ App.extend({
 
       // if user has deleted all features, reset localStorage
       if (App.state.featureCollection.features.length === 0) {
-        window.localStorage.clear()
+        this.clearLocalData()
       } else {
         window.localStorage.setItem('globalState', JSON.stringify(App.state.toJSON()))
       }
