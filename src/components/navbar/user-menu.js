@@ -5,7 +5,7 @@ const template = `
   <li class="dropdown">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span data-hook="label">Dropdown</span> <span class="caret"></span></a>
     <ul class="dropdown-menu">
-      <li><a href="#">Reporte</a></li>
+      <li><a href="#" data-hook="reporte">Reporte</a></li>
       <li role="separator" class="divider"></li>
       <li><a href="logout" data-hook="logout">Salir</a></li>
     </ul>
@@ -40,6 +40,10 @@ export default View.extend({
     'click a[data-hook=logout]': function (event) {
       event.preventDefault()
       AuthActions.logout()
+    },
+    'click a[data-hook=reporte]': function (event) {
+      event.preventDefault()
+      console.log('report')
     }
   },
   render: function () {

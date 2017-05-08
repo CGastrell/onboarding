@@ -15,7 +15,6 @@ export default AmpersandView.extend({
           <dt>Per&iacute;metro</dt>
           <dd><var data-hook="perimetro">lotname</var> m</dd>
         </dl>
-        <button data-hook="report" class="btn btn-success btn-lg btn-block">Ver resumen</button>
       </div>
     </div>`,
   events: {
