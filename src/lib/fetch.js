@@ -1,5 +1,6 @@
 import App from 'ampersand-app'
 import merge from 'lodash/merge'
+import config from 'config'
 
 const fetchOptions = {
   headers: {
@@ -9,7 +10,7 @@ const fetchOptions = {
   mode: 'cors'
 }
 
-const apiBaseUrl = 'http://localhost:3001'
+const apiBaseUrl = config.apiUrl
 
 function toBase64 (string) {
   return new Buffer(string || '').toString('base64')
