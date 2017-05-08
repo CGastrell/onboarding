@@ -29,7 +29,7 @@ export default View.extend({
     this.renderWithTemplate(this)
     const input = this.query('input')
     this.$input = $(input)
-    if (App.state.localidades && App.state.localidades.length) {
+    if (App.localidades && App.localidades.length) {
       this.initializeTypeAhead()
     } else {
       Actions.fetchLocalidades()
@@ -39,7 +39,7 @@ export default View.extend({
   initializeTypeAhead: function () {
     var self = this
     this.$input.typeahead({
-      source: App.state.localidades,
+      source: App.localidades,
       autoSelect: false,
       displayText: function (item) {
         return (typeof item !== 'undefined' && typeof item.localidad !== 'undefined' && item.localidad) || item

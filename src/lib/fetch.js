@@ -26,7 +26,7 @@ export default {
   },
   _bearerHeader: function () {
     return {
-      'Authorization': `Bearer ${App.state.user.token}`
+      'Authorization': `Bearer ${App.user.token}`
     }
   },
   get: function (url, options = {}) {

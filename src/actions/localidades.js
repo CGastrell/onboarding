@@ -13,7 +13,7 @@ export default {
           App.progress.inc()
         }
 
-        App.state.localidades = data
+        App.localidades = data
         return data
       })
       .catch(e => {})
