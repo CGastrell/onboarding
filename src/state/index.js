@@ -20,8 +20,7 @@ const Global = State.extend({
   // },
   session: {
     cultivos: [ 'array', false, () => new Cultivos(cultivos) ],
-    tipoCultivos: [ 'array', false, () => new TipoCultivos(tipocultivos) ],
-    localidades: 'array'
+    tipoCultivos: [ 'array', false, () => new TipoCultivos(tipocultivos) ]
   },
   collections: {
     // lots: Lots, // aka features

@@ -72,7 +72,7 @@ export default FormView.extend({
         required: true,
         requiredMessage: 'Debe seleccionar una localidad de la lista',
         invalidClass: 'text-danger',
-        options: App.state.localidades,
+        options: App.localidades,
         idAttribute: 'id_localidad',
         textAttribute: 'localidad',
         validityClassSelector: '.control-label',
@@ -86,7 +86,7 @@ export default FormView.extend({
               return 'Debe seleccionar una localidad'
             }
             const casted = Number(this.idLocalidadInputView.value)
-            const definedLoc = App.state.localidades.find(loc => loc.id_localidad === casted)
+            const definedLoc = App.localidades.find(loc => loc.id_localidad === casted)
             if (!definedLoc || definedLoc.localidad !== value) {
               return 'La localidad no fue seleccionada del listado'
             }
@@ -127,7 +127,7 @@ export default FormView.extend({
       //   itemText: 'localidad',
       //   maxTags: 1,
       //   typeahead: {
-      //     source: App.state.localidades.toJSON()
+      //     source: App.localidades.toJSON()
       //   },
       //   invalidClass: 'text-danger',
       //   validityClassSelector: '.control-label'

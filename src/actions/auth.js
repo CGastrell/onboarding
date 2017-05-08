@@ -10,7 +10,7 @@ export default {
     return App.fetch.login(user, pass) // try login
       .then(response => {
         App.progress.inc()
-        console.log('so, me trying to login')
+        console.log('me trying to login')
         if (response.status >= 400 && response.status < 500) {
           console.log('no account for me, register then')
           lastAttempt = 'register'
@@ -32,7 +32,7 @@ export default {
           if (apidata.status && apidata.status >= 400) {
             console.log('api nossa like me')
             // register error, throw and forget
-            throw new Error('Error registrando usuario')
+            throw new Error('Register user error')
           } else {
             console.log('api winks at me, so i give it another shot')
             // register success, try login again
@@ -73,5 +73,6 @@ export default {
 
   logout () {
     App.user.clear()
+    App.init({})
   }
 }
