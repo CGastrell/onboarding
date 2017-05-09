@@ -5,6 +5,7 @@ var webpack = require('webpack')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 // var UglifyJsPlugin = require('webpack-uglify-js-plugin')
+var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 var hotMiddlewareScript = 'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true'
 
@@ -16,7 +17,7 @@ module.exports = {
     client: hotMiddlewareScript,
     // client: 'webpack-hot-middleware/client?reload=true',
     main: path.join(__dirname, 'src/app.js'),
-    vendor: [ 'jquery', 'leaflet', 'leaflet-draw' ]
+    vendor: [ 'leaflet', 'leaflet-draw' ]
   },
   output: {
     path: path.join(__dirname, '/public/'),
@@ -29,6 +30,11 @@ module.exports = {
       'src'
     ]
   },
+  externals: {
+    jquery: 'jQuery',
+    react: 'React',
+    'react-dom': 'ReactDOM'
+  },
   // devServer: {
   //   contentBase: path.join(__dirname, 'public'),
   //   port: 3001,
@@ -37,12 +43,20 @@ module.exports = {
   //   progress: true
   // },
   plugins: [
+    // new BundleAnalyzerPlugin(),
     new webpack.optimize.CommonsChunkPlugin({ name: 'vendor', filename: 'vendor.bundle.js' }),
-    new webpack.ProvidePlugin({
-      $: 'jquery',
-      jQuery: 'jquery',
-      'window.jQuery': 'jquery'
-    }),
+    // new webpack.ProvidePlugin({
+    //   $: 'jquery',
+    //   jQuery: 'jquery',
+    //   'window.$': 'jquery',
+    //   'window.jQuery': 'jquery'
+    // }),
+    // new webpack.ProvidePlugin({
+    //   React: 'React',
+    //   react: 'React',
+    //   'window.react': 'React',
+    //   'window.React': 'React'
+    // }),
     new ExtractTextPlugin('[name]-[local]-[hash:6].css'),
     new HtmlWebpackPlugin({
       template: 'src/template/index.tpl.html',
@@ -67,7 +81,7 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
-        query: JSON.stringify({ presets: [ [ 'es2015', { modules: false } ], 'stage-0', 'env' ] })
+        query: JSON.stringify({ presets: [ 'react', [ 'es2015', { modules: false } ], 'stage-0', 'env' ] })
       },
       {
         test: /\.(otf|eot|svg|ttf|woff)/,

@@ -1,5 +1,9 @@
 import View from 'ampersand-view'
 import AuthActions from 'actions/auth'
+import ReportView from 'components/report'
+import bootbox from 'components/bootbox'
+import UserActions from 'actions/user'
+import MapActions from 'actions/map'
 
 const template = `
   <li class="dropdown">
@@ -43,7 +47,31 @@ export default View.extend({
     },
     'click a[data-hook=reporte]': function (event) {
       event.preventDefault()
-      console.log('report')
+      const closeConfirmAndZoom = (feature) => {
+        MapActions.zoomToFeature(feature)
+        if (this.confirmModal) {
+          this.confirmModal.modal('hide')
+        }
+      }
+      const reportView = new ReportView({
+        lotSearchFn: closeConfirmAndZoom.bind(this)
+      })
+      reportView.render()
+
+      this.confirmModal = bootbox.confirm({
+        title: 'Lotes',
+        message: reportView.el,
+        callback: UserActions.saveUserData,
+        buttons: {
+          confirm: {
+            label: 'Pedir presupuesto',
+            className: 'btn-success'
+          },
+          cancel: {
+            label: 'Cerrar'
+          }
+        }
+      })
     }
   },
   render: function () {
