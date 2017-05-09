@@ -34,5 +34,8 @@ export default {
         console.log('user wants his data back')
       }
     })
+  },
+  saveUserData (save) {
+    if (save) console.log('save it')
   }
 }

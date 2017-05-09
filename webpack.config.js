@@ -19,7 +19,7 @@ module.exports = {
   // devtool: 'eval-source-map',
   entry: {
     main: './src/app.js',
-    vendor: ['jquery', 'leaflet', 'leaflet-draw']
+    vendor: ['leaflet', 'leaflet-draw']
   },
   output: {
     path: path.join(__dirname, '/public/'),
@@ -32,14 +32,19 @@ module.exports = {
       'src'
     ]
   },
+  externals: {
+    jquery: 'jQuery',
+    react: 'React',
+    'react-dom': 'ReactDOM'
+  },
   plugins: [
     new webpack.optimize.CommonsChunkPlugin({ name: 'vendor', filename: 'vendor.bundle.js' }),
-    // new BundleAnalyzerPlugin(),
-    new webpack.ProvidePlugin({
-      $: 'jquery',
-      jQuery: 'jquery',
-      'window.jQuery': 'jquery'
-    }),
+    new BundleAnalyzerPlugin(),
+    // new webpack.ProvidePlugin({
+    //   $: 'jquery',
+    //   jQuery: 'jquery',
+    //   'window.jQuery': 'jquery'
+    // }),
     new ExtractTextPlugin(filenameTemplate + '.css'),
     new HtmlWebpackPlugin({
       template: 'src/template/index.tpl.html',
@@ -78,6 +83,7 @@ module.exports = {
         loader: 'babel-loader',
         options: {
           presets: [
+            'react',
             [ 'es2015', { modules: false } ],
             'stage-0',
             'env'
