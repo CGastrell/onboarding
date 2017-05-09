@@ -1,12 +1,13 @@
-// import App from 'ampersand-app'
+import App from 'ampersand-app'
 import fetch from 'lib/fetch'
 import bootbox from 'components/bootbox'
 
 export default {
   fetchUserData () {
+    App.progress.inc()
     return fetch.get('/onboarding/data')
       .then(res => {
-        // turn empty (no content) responses into {}
+        App.progress.inc()
         if (res.status === 204) {
           return null
         } else {
@@ -16,13 +17,14 @@ export default {
       .then(data => {
         if (!data) {
           console.log('no user data, carry on')
+          App.progress.done()
         } else {
-          console.log(data)
           this.handleUserData(data)
         }
       })
       .catch(e => {
         console.warn(e)
+        App.progress.done()
       })
   },
   handleUserData (data) {
@@ -31,11 +33,38 @@ export default {
       title: 'Restaurar datos',
       message: 'Desea cargar los datos de su último pedido?',
       callback: restaurar => {
-        console.log('user wants his data back')
+        App.progress.done()
+        if (restaurar) {
+          console.log('user wants his data back')
+          App.init(data.data)
+        }
       }
     })
   },
   saveUserData (save) {
-    if (save) console.log('save it')
+    if (save) {
+      fetch.post('/onboarding/data', {
+        body: JSON.stringify({data: App.state.toJSON()})
+      })
+      .then(res => {
+        if (res.status >= 400) {
+          throw new Error('API error')
+        }
+        return res.json()
+      })
+      .then(function () {
+        bootbox.alert({
+          title: 'Enhorabuena!',
+          message: 'Se ha enviado su solicitud de presupuesto.<br /><br />A la brevedad nos contactaremos con Ud.'
+        })
+      })
+      .catch(error => {
+        console.warn(error)
+        bootbox.alert({
+          title: 'Error',
+          message: 'Hubo un error guardando los datos. Por favor, inténtelo nuevamente'
+        })
+      })
+    }
   }
 }
