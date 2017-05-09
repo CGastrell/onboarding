@@ -53,15 +53,12 @@ export default {
         }
       })
       .then(finalJson => {
-        App.progress.done()
-        // preloader.modal('hide')
         console.log('and me finally through', finalJson)
         App.user.set(finalJson)
         lastAttempt = 'login'
       })
       .catch(err => {
         App.progress.done()
-        // preloader.modal('hide')
         bootbox.alert({
           title: 'Error',
           message: 'Hubo un error, por favor, verifique los datos e intente nuevamente'

@@ -28,9 +28,9 @@ export default View.extend({
         bootbox.alert('Por favor ingrese un usuario y contraseña válidos')
         return
       }
-
+      App.progress.start()
       AuthActions.login(user, pass)
-        .then(UserActions.fetchUserData)
+        .then(UserActions.fetchUserData.bind(UserActions))
 
       this.parent.loginModal.modal('hide')
     }

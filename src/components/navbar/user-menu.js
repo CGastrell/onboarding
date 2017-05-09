@@ -73,8 +73,5 @@ export default View.extend({
         }
       })
     }
-  },
-  render: function () {
-    this.renderWithTemplate(this)
   }
 })
