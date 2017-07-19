@@ -38,8 +38,8 @@ module.exports = {
     'react-dom': 'ReactDOM'
   },
   plugins: [
-    // new webpack.optimize.CommonsChunkPlugin({ name: 'vendor', filename: 'vendor.bundle.js' }),
-    new BundleAnalyzerPlugin(),
+    new webpack.optimize.CommonsChunkPlugin({ name: 'vendor', filename: 'vendor.bundle.js' }),
+    // new BundleAnalyzerPlugin(),
     // new webpack.ProvidePlugin({
     //   $: 'jquery',
     //   jQuery: 'jquery',
