@@ -7,9 +7,10 @@ import Actions from 'actions/localidades'
 import flatten from 'geojson-flatten'
 import 'bootstrap-3-typeahead'
 
+const inputStyle = 'width: 300px;'
 const template = `
 <form class="navbar-form navbar-left" role="search">
-  <input type="text" class="form-control" placeholder="Search">
+  <input style="${inputStyle}" type="text" class="form-control" placeholder="Buscar una localidad">
 </form>
 `
 
@@ -25,7 +26,6 @@ export default View.extend({
     }
   },
   render: function () {
-    window.aaa = this
     this.renderWithTemplate(this)
     const input = this.query('input')
     this.$input = $(input)
@@ -42,7 +42,10 @@ export default View.extend({
       source: App.localidades,
       autoSelect: false,
       displayText: function (item) {
-        return (typeof item !== 'undefined' && typeof item.localidad !== 'undefined' && item.localidad) || item
+        return (
+          typeof item !== 'undefined' &&
+          typeof item.localidad !== 'undefined' &&
+          `${item.localidad}, ${item.provincia}`) || item
       }
     })
     // the toggle is done here so it only takes effect
@@ -51,8 +54,10 @@ export default View.extend({
 
     this.$input.change(function (event) {
       const current = self.$input.typeahead('getActive')
+      // console.log(current)
+      // console.log(self.$input.val().split(',')[0])
       if (current) {
-        if (current.localidad === self.$input.val()) {
+        if (current.localidad === self.$input.val().split(',')[0]) {
           const gjson = new L.GeoJSON(flatten(current.geometry))
           App.Map.map.setView(gjson.getBounds().getCenter(), 12)
         }
