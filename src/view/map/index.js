@@ -6,10 +6,13 @@ import LotForm from 'components/lot-form'
 import geojsonRewind from 'geojson-rewind'
 import App from 'ampersand-app'
 
-import 'leaflet-draw'
+// import 'leaflet-draw'
 
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-draw/dist/leaflet.draw-src.css'
+import 'styles/leaflet-custom.css'
+
+import 'lib/leaflet-draw'
 
 const drawDefaultOptions = {
   position: 'topright',
@@ -38,6 +41,9 @@ export default View.extend({
   render: function () {
     this.renderWithTemplate(this)
     this.setupMap()
+    // IMPORTANT: draw button customization
+    // const drawButton = this.query('.leaflet-draw-draw-polygon')
+    // drawButton.innerHTML = 'Nuevo lote' + drawButton.innerHTML
   },
   setupMap: function () {
     this.hybridLayer = window.MQ.hybridLayer()

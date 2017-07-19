@@ -1,0 +1,19 @@
+.leaflet-draw-section:not(:first-child) {
+  float: right;
+}
+/*
+ul.leaflet-draw-actions {
+  margin-top: 4px;
+  float: right;
+  height: 30px;
+  position: relative;
+}
+*/
+
+/*
+.leaflet-draw-toolbar a.leaflet-draw-draw-polygon {
+  background-image: none;
+  width: 80px;
+  padding: 0 6px;
+}
+*/
