@@ -7,7 +7,7 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var UglifyJsPlugin = require('webpack-uglify-js-plugin')
 
 // only debugging
-var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+// var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 // GH-PAGES deployment
 var publicPath = process.env['SITE'] === 'ghpages' ? '/onboarding/' : '/'
@@ -38,7 +38,7 @@ module.exports = {
     'react-dom': 'ReactDOM'
   },
   plugins: [
-    new webpack.optimize.CommonsChunkPlugin({ name: 'vendor', filename: 'vendor.bundle.js' }),
+    // new webpack.optimize.CommonsChunkPlugin({ name: 'vendor', filename: 'vendor.bundle.js' }),
     new BundleAnalyzerPlugin(),
     // new webpack.ProvidePlugin({
     //   $: 'jquery',
