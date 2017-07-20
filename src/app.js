@@ -47,7 +47,9 @@ App.extend({
       }
       App.state = new GlobalState(state)
     } else {
-      prevState = this.getLastState()
+      // cancel saved state retrieval
+      // mention BC here
+      // prevState = this.getLastState()
     }
 
     App.progress.inc()
