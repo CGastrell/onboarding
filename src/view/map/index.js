@@ -12,28 +12,7 @@ import 'leaflet/dist/leaflet.css'
 import 'leaflet-draw/dist/leaflet.draw-src.css'
 import 'styles/leaflet-custom.css'
 
-import 'lib/leaflet-draw'
-
-const drawDefaultOptions = {
-  position: 'topright',
-  edit: {
-    featureGroup: null,
-    poly: {
-      allowIntersection: false
-    }
-    // remove: false
-  },
-  draw: {
-    marker: false,
-    polyline: false,
-    rectangle: false,
-    circle: false,
-    polygon: {
-      allowIntersection: false,
-      showArea: true
-    }
-  }
-}
+import {drawingStyles, controlOptions} from 'lib/leaflet-draw'
 
 export default View.extend({
   autoRender: true,
@@ -69,9 +48,10 @@ export default View.extend({
       'Plano': this.plainLayer
     }, null, {position: 'topleft'}).addTo(this.map)
 
-    let options = JSON.parse(JSON.stringify(drawDefaultOptions))
+    let options = JSON.parse(JSON.stringify(controlOptions))
     options.edit.featureGroup = this.drawLayer
     this.drawControl = new L.Control.Draw(options).addTo(this.map)
+    this.drawControl.setDrawingOptions(drawingStyles)
 
     // keep the state current
     this.map.on('moveend', this.updateMapState)
