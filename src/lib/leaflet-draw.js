@@ -48,6 +48,45 @@ L.drawLocal.edit.handlers.remove.tooltip = {
   text: 'Clickee sobre un lote para borrarlo'
 }
 
+L.Edit.Poly = L.Edit.Poly.extend({
+  options: {
+    icon: new L.DivIcon({
+      iconSize: new L.Point(12, 12),
+      className: 'leaflet-div-icon leaflet-editing-icon vertex'
+    })
+  }
+})
+
+export const drawingStyles = {
+  polygon: {
+    icon: new L.DivIcon({
+      iconSize: new L.Point(12, 12),
+      className: 'leaflet-div-icon leaflet-editing-icon vertex'
+    })
+  }
+}
+
+export const controlOptions = {
+  position: 'topright',
+  edit: {
+    featureGroup: null,
+    poly: {
+      allowIntersection: false
+    }
+    // remove: false
+  },
+  draw: {
+    marker: false,
+    polyline: false,
+    rectangle: false,
+    circle: false,
+    polygon: {
+      allowIntersection: false,
+      showArea: true
+    }
+  }
+}
+
 // L.DrawToolbar.extend({
 //   getModeHandlers: function (map) {
 //     return [
