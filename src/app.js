@@ -63,13 +63,13 @@ App.extend({
             App.init(prevState)
           } else {
             this.clearLocalData()
-            this.bindState()
+            // this.bindState()
             this.initializeViews()
           }
         }
       })
     } else {
-      this.bindState()
+      // this.bindState()
       this.initializeViews()
     }
   },
@@ -80,42 +80,42 @@ App.extend({
   clearLocalData: function () {
     window.localStorage.clear()
   },
-  getLastState: function () {
-    const state = window.localStorage.getItem('globalState')
-    if (!state) return false
-    let stateObject = false
-    try {
-      stateObject = JSON.parse(state)
-    } catch (ex) {
-      console.warn(ex)
-    }
-    // delete lastState if no features
-    if (
-      !stateObject.featureCollection ||
-      !stateObject.featureCollection.features ||
-      !stateObject.featureCollection.features.length
-    ) {
-      window.localStorage.clear()
-      return false
-    }
-    return stateObject
-  },
-  bindState: function () {
-    App.state.on('change', (state, data) => {
-      console.log('state change')
-      if (!App.stateAnyway && !App.state.featureCollection) return
-      if (!App.stateAnyway && !App.state.featureCollection.features) return
-      if (!App.stateAnyway && !App.state.featureCollection.features.length) return
-
-      // if user has deleted all features, reset localStorage
-      if (App.state.featureCollection.features.length === 0) {
-        this.clearLocalData()
-      } else {
-        window.localStorage.setItem('globalState', JSON.stringify(App.state.toJSON()))
-      }
-      App.stateAnyway = false
-    })
-  },
+  // getLastState: function () {
+  //   const state = window.localStorage.getItem('globalState')
+  //   if (!state) return false
+  //   let stateObject = false
+  //   try {
+  //     stateObject = JSON.parse(state)
+  //   } catch (ex) {
+  //     console.warn(ex)
+  //   }
+  //   // delete lastState if no features
+  //   if (
+  //     !stateObject.featureCollection ||
+  //     !stateObject.featureCollection.features ||
+  //     !stateObject.featureCollection.features.length
+  //   ) {
+  //     window.localStorage.clear()
+  //     return false
+  //   }
+  //   return stateObject
+  // },
+  // bindState: function () {
+  //   App.state.on('change', (state, data) => {
+  //     console.log('state change')
+  //     if (!App.stateAnyway && !App.state.featureCollection) return
+  //     if (!App.stateAnyway && !App.state.featureCollection.features) return
+  //     if (!App.stateAnyway && !App.state.featureCollection.features.length) return
+  //
+  //     // if user has deleted all features, reset localStorage
+  //     if (App.state.featureCollection.features.length === 0) {
+  //       this.clearLocalData()
+  //     } else {
+  //       window.localStorage.setItem('globalState', JSON.stringify(App.state.toJSON()))
+  //     }
+  //     App.stateAnyway = false
+  //   })
+  // },
   initMapPage: function () {
     if (App.Map) {
       App.Map.remove()

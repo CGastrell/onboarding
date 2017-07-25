@@ -23,5 +23,14 @@ export default {
     const maxy = llArray[3] // north
 
     return new L.LatLngBounds(new L.LatLng(miny, minx), new L.LatLng(maxy, maxx))
-  }
+  },
+  getLayerByFeatureId (id) {
+    let layerInstance = null
+    App.Map.drawLayer.eachLayer(layer => {
+      if (layer.feature.properties.id === id) {
+        layerInstance = layer
+      }
+    })
+    return layerInstance
+  },
 }
