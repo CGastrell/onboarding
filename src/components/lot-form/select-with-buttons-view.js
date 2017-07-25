@@ -25,7 +25,7 @@ export default SelectView.extend({
           if (!answer) return
 
           App.state.settlements.add({nombre: answer})
-          buttonElement.focus()
+          window.setTimeout(() => buttonElement.focus(), 500)
         }
       )
     }

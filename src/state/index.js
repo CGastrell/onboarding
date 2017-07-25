@@ -5,6 +5,7 @@ import { Collection as Cultivos } from 'model/cultivo'
 import { Collection as TipoCultivos } from 'model/tipo-cultivo'
 import cultivos from 'model/cultivo-data.json'
 import tipocultivos from 'model/tipo-cultivo-data.json'
+import { Collection as FeatureCollection } from 'model/lot'
 
 import Map from 'model/map'
 
@@ -12,8 +13,9 @@ const Global = State.extend({
   extraProperties: 'allow',
   props: {
     // maplibsready: [ 'boolean', false, false ],
-    featureCollection: ['object', false, () => { return {type: 'FeatureCollection', features: []} }],
-    mapstate: [ 'object', false, () => Map.model ]
+    // featureCollection: ['object', false, () => { return {type: 'FeatureCollection', features: []} }],
+    mapstate: [ 'object', false, () => Map.model ],
+    modalIsOpen: [ 'boolean', true, false ]
   },
   // children: {
   //   user: User
@@ -23,7 +25,7 @@ const Global = State.extend({
     tipoCultivos: [ 'array', false, () => new TipoCultivos(tipocultivos) ]
   },
   collections: {
-    // lots: Lots, // aka features
+    featureCollection: FeatureCollection,
     settlements: Settlements
   }
 })

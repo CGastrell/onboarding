@@ -41,14 +41,14 @@ export default View.extend({
         })
       }
     },
-    loginButton: {
-      hook: 'user-menu',
-      prepareView: function (el) {
-        return new LoginButton({
-          model: App.user
-        })
-      }
-    }
+    // loginButton: {
+    //   hook: 'user-menu',
+    //   prepareView: function (el) {
+    //     return new LoginButton({
+    //       model: App.user
+    //     })
+    //   }
+    // }
   }
 })
 

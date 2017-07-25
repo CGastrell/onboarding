@@ -1,28 +1,23 @@
 // import AmpersandCollection from 'ampersand-collection'
 // import AmpersandModel from 'ampersand-model'
+import { Collection as Cultivos } from 'model/cultivo'
 
-export default {
-  get model () {
-    return {
-      id: 0,
-      type: 'Feature',
-      geometry: {},
-      properties: {
-        id: 0,
-        nombre: '',
-        settlement: '',
-        id_tipo_cultivo: 0,
-        id_localidad: 0,
-        mol: false,
-        axa: false,
-        cosecha: false,
-        prescripcion: false,
-        // geo stuff
-        area: 0,
-        perimeter: 0,
-        bbox: []
-      }
-    }
+const defaultProps = () => {
+  return {
+    id: 0,
+    nombre: '',
+    settlement: '',
+    id_tipo_cultivo: 0,
+    id_localidad: 0,
+    cultivos: new Cultivos(),
+    mol: false,
+    axa: false,
+    cosecha: false,
+    prescripcion: false,
+    // geo stuff
+    area: 0,
+    perimeter: 0,
+    bbox: []
   }
 }
 // export const Model = AmpersandModel.extend({
@@ -59,3 +54,34 @@ export default {
 // road
 // country
 // state
+
+import AmpersandModel from 'ampersand-model'
+import AmpersandCollection from 'ampersand-collection'
+
+const Model = AmpersandModel.extend({
+  props: {
+    id: 'number',
+    type: [ 'string', false, 'Feature' ],
+    geometry: [ 'object', true ],
+    properties: [ 'object', false, () => defaultProps() ]
+  },
+  session: {
+    layer: 'any'
+  },
+  parse: function (data) {
+    data.id = data.properties.id
+    return data
+  }
+})
+
+const Collection = AmpersandCollection.extend({
+  model: Model,
+  toGeoJSON: function (filter) {
+    return {
+      type: 'FeatureCollection',
+      features: filter ? this.toJSON().filter(filter) : this.toJSON()
+    }
+  }
+})
+
+export {Collection, Model}

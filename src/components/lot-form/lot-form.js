@@ -1,10 +1,11 @@
 import App from 'ampersand-app'
 import FormView from 'ampersand-form-view'
 import InputView from 'components/input-view'
-import TypeaheadView from 'components/input-view/typeahead'
+// import TypeaheadView from 'components/input-view/typeahead'
 import CustomSelectView from './select-with-buttons-view'
-import SelectView from 'components/select-view'
+// import SelectView from 'components/select-view'
 import CheckboxView from 'components/checkbox-view'
+import Select2View from 'components/select2-view'
 
 // import TagsInputView from 'components/input-view/tagsinput'
 // import 'styles/bootstrap-tagsinput.css'
@@ -16,11 +17,33 @@ export default FormView.extend({
   },
   initialize: function (options) {
     this.datamodel = this.layer.feature.properties
-    this.idLocalidadInputView = new InputView({
-      name: 'id_localidad',
-      type: 'hidden',
-      value: this.datamodel.id_localidad
+    // this.idLocalidadInputView = new InputView({
+    //   name: 'id_localidad',
+    //   type: 'hidden',
+    //   value: this.datamodel.id_localidad
+    // })
+
+    const selectCultivos = new Select2View({
+      label: 'Cultivos',
+      name: 'cultivos',
+      multiple: true,
+      tags: true,
+      required: true,
+      options: App.state.cultivos,
+      styles: 'form-group',
+      value: this.datamodel.cultivos,
+      unselectedText: 'Seleccione hasta 2 cultivos',
+      idAttribute: 'id_cultivo',
+      textAttribute: 'nombre',
+      requiredMessage: 'Ingrese al menos un cultivo',
+      invalidClass: 'text-danger',
+      validityClassSelector: '.control-label',
+      yieldModel: true
     })
+
+    // selectCultivos.listenTo(this.datamodel.cultivos, 'add', () => {
+      // selectCultivos.setValues(this.datamodel.cultivos)
+    // })
 
     this.fields = [
       new InputView({
@@ -46,54 +69,55 @@ export default FormView.extend({
         textAttribute: 'nombre',
         validityClassSelector: '.control-label'
       }),
-      new SelectView({
-        name: 'id_tipo_cultivo',
-        label: 'Cultivo',
-        value: this.datamodel.id_cultivo,
-        styles: 'form-group',
-        required: true,
-        requiredMessage: 'Necesita especificar un cultivo',
-        invalidClass: 'text-danger',
-        options: App.state.tipoCultivos,
-        yieldModel: false,
-        idAttribute: 'id_tipo_cultivo',
-        textAttribute: 'nombre',
-        validityClassSelector: '.control-label'
-      }),
-      this.idLocalidadInputView,
+      selectCultivos,
+      // new SelectView({
+      //   name: 'id_tipo_cultivo',
+      //   label: 'Cultivo',
+      //   value: this.datamodel.id_cultivo,
+      //   styles: 'form-group',
+      //   required: true,
+      //   requiredMessage: 'Necesita especificar un cultivo',
+      //   invalidClass: 'text-danger',
+      //   options: App.state.tipoCultivos,
+      //   yieldModel: false,
+      //   idAttribute: 'id_tipo_cultivo',
+      //   textAttribute: 'nombre',
+      //   validityClassSelector: '.control-label'
+      // }),
+      // this.idLocalidadInputView,
       // TODO: after selecting a loc, if you type and re-select,
       // the label will remain as if it wasn't valid
-      new TypeaheadView({
-        name: 'localidad',
-        label: 'Localidad',
-        value: this.datamodel.localidad,
-        styles: 'form-group',
-        placeholder: 'Escriba el nombre de una localidad',
-        required: true,
-        requiredMessage: 'Debe seleccionar una localidad de la lista',
-        invalidClass: 'text-danger',
-        options: App.localidades,
-        idAttribute: 'id_localidad',
-        textAttribute: 'localidad',
-        validityClassSelector: '.control-label',
-        afterSelect: (item) => {
-          // set the hidden input value to the id of the loc match
-          this.idLocalidadInputView.setValue(item.id_localidad)
-        },
-        tests: [
-          value => {
-            if (!this.idLocalidadInputView.value) {
-              return 'Debe seleccionar una localidad'
-            }
-            const casted = Number(this.idLocalidadInputView.value)
-            const definedLoc = App.localidades.find(loc => loc.id_localidad === casted)
-            if (!definedLoc || definedLoc.localidad !== value) {
-              return 'La localidad no fue seleccionada del listado'
-            }
-            return ''
-          }
-        ]
-      }),
+      // new TypeaheadView({
+      //   name: 'localidad',
+      //   label: 'Localidad',
+      //   value: this.datamodel.localidad,
+      //   styles: 'form-group',
+      //   placeholder: 'Escriba el nombre de una localidad',
+      //   required: true,
+      //   requiredMessage: 'Debe seleccionar una localidad de la lista',
+      //   invalidClass: 'text-danger',
+      //   options: App.localidades,
+      //   idAttribute: 'id_localidad',
+      //   textAttribute: 'localidad',
+      //   validityClassSelector: '.control-label',
+      //   afterSelect: (item) => {
+      //     // set the hidden input value to the id of the loc match
+      //     this.idLocalidadInputView.setValue(item.id_localidad)
+      //   },
+      //   tests: [
+      //     value => {
+      //       if (!this.idLocalidadInputView.value) {
+      //         return 'Debe seleccionar una localidad'
+      //       }
+      //       const casted = Number(this.idLocalidadInputView.value)
+      //       const definedLoc = App.localidades.find(loc => loc.id_localidad === casted)
+      //       if (!definedLoc || definedLoc.localidad !== value) {
+      //         return 'La localidad no fue seleccionada del listado'
+      //       }
+      //       return ''
+      //     }
+      //   ]
+      // }),
       new CheckboxView({
         name: 'axa',
         label: 'Ambientación',

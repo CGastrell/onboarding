@@ -27,3 +27,26 @@ document, body, html {
 select.form-control.comboselect {
   -webkit-appearance: initial;
 }
+
+/* SELECT2 */
+.select2-container--default.select2-container--focus .select2-selection--multiple,
+.select2-container--default .select2-selection--multiple {
+  border: 1px solid #ccc;
+}
+
+.lot-detail {
+  padding: 5px 1px;
+  border-bottom: 1px solid #eee
+}
+span.minibutton {
+  padding: 3px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  cursor: pointer;
+}
+span.minibutton:hover {
+  background-color: #eee;
+}
+.subtext {
+  font-size: 75%;
+}
