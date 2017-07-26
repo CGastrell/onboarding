@@ -2,12 +2,14 @@ import App from 'ampersand-app'
 import L from 'leaflet'
 
 export default {
-  zoomToFeature (feature) {
+  zoomToFeature (feature, padit) {
     if (!feature.properties || !feature.properties.bbox) {
       return
     }
-
-    App.Map.map.fitBounds(this.boundsFromBBoxString(feature.properties.bbox))
+    const options = padit
+      ? { paddingBottomRight: [380, 0] }
+      : {}
+    App.Map.map.fitBounds(this.boundsFromBBoxString(feature.properties.bbox), options)
   },
   boundsFromBBoxString (str) {
     if (!str) {
@@ -33,4 +35,16 @@ export default {
     })
     return layerInstance
   },
+  hideEditingToolbar: function () {
+    App.Map.drawControl._toolbars.edit._toolbarContainer.style.display = 'none'
+  },
+  showEditingToolbar: function () {
+    App.Map.drawControl._toolbars.edit._toolbarContainer.style.display = ''
+  },
+  hideDrawingToolbar: function () {
+    App.Map.drawControl._toolbars.draw._toolbarContainer.style.display = 'none'
+  },
+  showDrawingToolbar: function () {
+    App.Map.drawControl._toolbars.draw._toolbarContainer.style.display = ''
+  }
 }
