@@ -1,18 +1,24 @@
 import View from 'ampersand-view'
 import App from 'ampersand-app'
+import MapActions from 'actions/map'
+import L from 'leaflet'
 
 const LotRow = View.extend({
   template: `
     <div class="lot-detail">
       <div>
-        <strong data-hook="name"></strong>
+        <strong data-hook="name" style="cursor: pointer;"></strong>
         <span class="glyphicon glyphicon-trash pull-right minibutton text-danger delete"></span>
-        <span class="glyphicon glyphicon-edit pull-right minibutton text-success edit"></span>
-        <span class='glyphicon glyphicon-eye-open pull-right minibutton center'></span>
+        <span class="glyphicon glyphicon-pencil pull-right minibutton text-success edit"></span>
+        <span class="glyphicon glyphicon-floppy-disk pull-right minibutton text-success save"></span>
+        <span class='glyphicon glyphicon-zoom-in pull-right minibutton center'></span>
       </div>
       <div class="subtext">Establecimiento: <span data-hook="settlement"></span></div>
       <div class="subtext">Superficie: <span data-hook="area"></span> ha</div>
     </div>`,
+  props: {
+    editing: [ 'boolean', true, false ]
+  },
   derived: {
     formattedArea: {
       deps: ['model.properties.area'],
@@ -30,17 +36,57 @@ const LotRow = View.extend({
     },
     'model.properties.settlement': {
       hook: 'settlement'
-    }
+    },
+    editing: [
+      {
+        type: 'toggle',
+        selector: '.edit',
+        invert: true
+      },
+      {
+        type: 'toggle',
+        selector: '.save'
+      }
+    ]
   },
   events: {
+    'click data-hook[name]': function (event) {
+      event.preventDefault()
+      const layer = App.Map.drawLayer.getLayer(this.model.properties.id)
+      App.Map.openPolygonModal({target: layer})
+    },
     'click .minibutton.center': function (event) {
-      console.log('center')
+      event.preventDefault()
+      MapActions.zoomToFeature(this.model, true)
     },
     'click .minibutton.edit': function (event) {
-      console.log('edit')
+      event.preventDefault()
+      if (App.state.editingEnabled) return
+      const layer = App.Map.drawLayer.getLayer(this.model.properties.id)
+      if (layer) {
+        layer.editing.enable()
+        App.state.editingEnabled = true
+        this.editing = true
+        MapActions.hideDrawingToolbar()
+        MapActions.hideEditingToolbar()
+      }
+    },
+    'click .minibutton.save': function (event) {
+      event.preventDefault()
+      const layer = App.Map.drawLayer.getLayer(this.model.properties.id)
+      if (layer) {
+        layer.editing.disable()
+        this.editing = false
+        App.state.editingEnabled = false
+        App.Map.map.fireEvent(L.Draw.Event.EDITED)
+        MapActions.showDrawingToolbar()
+        MapActions.showEditingToolbar()
+      }
     },
     'click .minibutton.delete': function (event) {
-      console.log('delete')
+      event.preventDefault()
+      App.Map.drawLayer.removeLayer(App.Map.drawLayer.getLayer(this.model.properties.id))
+      App.Map.map.fireEvent(L.Draw.Event.DELETED)
     }
   }
 })
@@ -63,7 +109,6 @@ export default View.extend({
     this.renderLotList()
   },
   renderLotList: function () {
-    if (this.list) this.list.remove()
     this.renderCollection(
       App.state.featureCollection,
       LotRow,
@@ -71,7 +116,6 @@ export default View.extend({
     )
   },
   onFeatures: function (state) {
-    console.log('modalIsOpen', App.state.modalIsOpen)
     if (App.state.featureCollection.length > 0) {
       if (App.state.modalIsOpen) {
         this.sidebarInstance.hide()
