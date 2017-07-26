@@ -173,6 +173,9 @@ export default View.extend({
     return totalDistance
   },
   openPolygonModal: function (event) {
+    if (App.state.editingEnabled) {
+      return
+    }
     if (this.drawControl._toolbars.edit._modes.remove.handler._enabled) {
       return
     }
