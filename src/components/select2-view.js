@@ -2,6 +2,7 @@ import View from 'ampersand-view'
 import matchesSelector from 'matches-selector'
 import dom from 'ampersand-dom'
 import 'select2'
+import 'select2/dist/js/i18n/es'
 import $ from 'jquery'
 
 import 'select2/dist/css/select2.css'
@@ -153,6 +154,7 @@ export default View.extend({
       tags: this.tags,
       tokenSeparator: this.tokenSeparator,
       maximumSelectionLength: 2,
+      language: 'es',
       createTag: (() => {
         // https://select2.github.io/options.html#can-i-control-when-tags-are-created
         if (!this.allowCreateTags) {

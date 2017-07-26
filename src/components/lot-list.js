@@ -121,7 +121,7 @@ export default View.extend({
       reportView.render()
 
       this.confirmModal = bootbox.confirm({
-        title: 'Lotes',
+        title: 'Solicitud de presupuesto',
         message: reportView.el,
         callback: this.requestReport,
         buttons: {
