@@ -2,6 +2,8 @@ import View from 'ampersand-view'
 import App from 'ampersand-app'
 import MapActions from 'actions/map'
 import L from 'leaflet'
+import ReportView from 'components/report'
+import bootbox from 'bootbox'
 
 const LotRow = View.extend({
   template: `
@@ -91,12 +93,52 @@ const LotRow = View.extend({
   }
 })
 export default View.extend({
-  template: `<div>
-    <h4>Lotes</h4>
-    <div data-hook="list"></div>
+  template: `<div class="sidebar-main-container">
+    <h4 class="sidebar-header">Lotes</h4>
+    <div data-hook="list" class="sidebar-body"></div>
+    <div data-hook="footer" class="sidebar-footer">
+      <a role="button" class="btn btn-block btn-success ask" href="#">Pedir cotización</a>
+    </div>
   </div>`,
   props: {
     sidebarInstance: 'any'
+  },
+  events: {
+    'click .ask': function (event) {
+      event.preventDefault()
+      console.log('ask for')
+      console.log(App.state.featureCollection.toGeoJSON())
+      App.Map.rightSidebar.hide()
+      // const closeConfirmAndZoom = (feature) => {
+      //   MapActions.zoomToFeature(feature)
+      //   if (this.confirmModal) {
+      //     this.confirmModal.modal('hide')
+      //   }
+      // }
+      const reportView = new ReportView({
+        // lotSearchFn: closeConfirmAndZoom.bind(this)
+      })
+      reportView.render()
+
+      this.confirmModal = bootbox.confirm({
+        title: 'Lotes',
+        message: reportView.el,
+        callback: this.requestReport,
+        buttons: {
+          confirm: {
+            label: 'Pedir presupuesto',
+            className: 'btn-success'
+          },
+          cancel: {
+            label: 'Cerrar'
+          }
+        }
+      })
+    }
+  },
+  requestReport: function () {
+    console.log(arguments)
+    App.Map.rightSidebar.show()
   },
   initialize: function () {
     this.listenTo(App.state.featureCollection, 'change sync add reset remove', this.onFeatures)

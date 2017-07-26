@@ -10,64 +10,59 @@ export default AmpersandView.extend({
     <h3>Detalles</h3>
     <div data-hook="lots"></div>
   </div>`,
-  initialize: function (options) {
-    this.lotSearchFn = options.lotSearchFn
-  },
+  // initialize: function (options) {
+  //   this.lotSearchFn = options.lotSearchFn
+  // },
   render: function () {
     this.renderWithTemplate(this)
 
     ReactDOM.render(
       <LotTable
-        collection={App.state.featureCollection.features}
-        onSearchClick={this.lotSearchFn}
+        collection={App.state.featureCollection.toGeoJSON().features}
+        // onSearchClick={this.lotSearchFn}
       />,
       this.queryByHook('lots')
     )
   }
 })
 
-class LotTable extends React.Component {
-  componentWillMount () {
-    this.setState({features: App.state.featureCollection.features})
-  }
-
-  render () {
-    const searchFn = this.props.onSearchClick
-    const { features } = this.state
-    return (
-      <table className='table table-striped table-hover'>
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Establecimiento</th>
-            <th>Área</th>
-            <th>Cultivo</th>
-            <th>Productos</th>
-            <th style={{textAlign: 'center'}}><span className='glyphicon glyphicon-eye-open' /></th>
-          </tr>
-        </thead>
-        <tbody>
-          {
-            features.map((feature, idx) => {
-              return <LotRow key={idx} {...feature} onSearchClick={searchFn} />
-            })
-          }
-        </tbody>
-      </table>
-    )
-  }
+const LotTable = (props) => {
+  // const searchFn = props.onSearchClick
+  const { collection } = props
+  return (
+    <table className='table table-striped table-hover'>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Establecimiento</th>
+          <th>Área</th>
+          <th>Cultivo</th>
+          <th>Productos</th>
+          {/* <th style={{textAlign: 'center'}}><span className='glyphicon glyphicon-eye-open' /></th> */}
+        </tr>
+      </thead>
+      <tbody>
+        {
+          collection.map((feature, idx) => {
+            // return <LotRow key={idx} {...feature} onSearchClick={searchFn} />
+            return <LotRow key={idx} properties={feature.properties} />
+          })
+        }
+      </tbody>
+    </table>
+  )
 }
 
 class LotRow extends React.Component {
-  constructor (props) {
-    super(props)
-    this.handleClick = this.handleClick.bind(this)
-  }
+  // constructor (props) {
+  //   super(props)
+  //   this.handleClick = this.handleClick.bind(this)
+  // }
 
-  handleClick (event) {
-    event.preventDefault()
-    this.props.onSearchClick(this.props)
-  }
+  // handleClick (event) {
+  //   event.preventDefault()
+  //   this.props.onSearchClick(this.props)
+  // }
 
   render () {
     const { properties } = this.props
@@ -95,11 +90,11 @@ class LotRow extends React.Component {
             )
           })
         }</td>
-        <td className='actions'>
+        {/* <td className='actions'>
           <a href='#' role='button' onClick={this.handleClick}>
             <span className='glyphicon glyphicon-search' />
           </a>
-        </td>
+        </td> */}
       </tr>
     )
   }

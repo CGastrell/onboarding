@@ -1,6 +1,19 @@
 .leaflet-draw-section:not(:first-child) {
   float: right;
 }
+.leaflet-sidebar .sidebar-footer a {
+  color: #fff;
+}
+.sidebar-main-container {
+  display: flex;
+  flex-direction: column;
+  height: 95%;
+}
+.sidebar-body {
+  flex-grow: 1;
+  max-height: 90%;
+  overflow: auto;
+}
 /*
 ul.leaflet-draw-actions {
   margin-top: 4px;
