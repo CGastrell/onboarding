@@ -15,7 +15,8 @@ const Global = State.extend({
     // maplibsready: [ 'boolean', false, false ],
     // featureCollection: ['object', false, () => { return {type: 'FeatureCollection', features: []} }],
     mapstate: [ 'object', false, () => Map.model ],
-    modalIsOpen: [ 'boolean', true, false ]
+    modalIsOpen: [ 'boolean', true, false ],
+    editingEnabled: [ 'boolean', true, false ]
   },
   // children: {
   //   user: User
