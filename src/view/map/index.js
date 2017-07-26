@@ -69,6 +69,8 @@ export default View.extend({
     this.map.on(L.Draw.Event.CREATED, this.onCreated.bind(this))
     this.map.on(L.Draw.Event.EDITED, this.updateFeatures.bind(this))
     this.map.on(L.Draw.Event.DELETED, this.updateFeatures.bind(this))
+    this.map.on(L.Draw.Event.EDITSTART, () => { App.state.editingEnabled = true })
+    this.map.on(L.Draw.Event.EDITSTOP, () => { App.state.editingEnabled = false })
   },
   initializeFeatures: function () {
     if (App.state.featureCollection && App.state.featureCollection.length > 0) {
