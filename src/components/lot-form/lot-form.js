@@ -4,7 +4,7 @@ import InputView from 'components/input-view'
 // import TypeaheadView from 'components/input-view/typeahead'
 import CustomSelectView from './select-with-buttons-view'
 // import SelectView from 'components/select-view'
-import CheckboxView from 'components/checkbox-view'
+// import CheckboxView from 'components/checkbox-view'
 import Select2View from 'components/select2-view'
 
 // import TagsInputView from 'components/input-view/tagsinput'
@@ -17,33 +17,6 @@ export default FormView.extend({
   },
   initialize: function (options) {
     this.datamodel = this.layer.feature.properties
-    // this.idLocalidadInputView = new InputView({
-    //   name: 'id_localidad',
-    //   type: 'hidden',
-    //   value: this.datamodel.id_localidad
-    // })
-
-    const selectCultivos = new Select2View({
-      label: 'Cultivos',
-      name: 'cultivos',
-      multiple: true,
-      tags: true,
-      required: true,
-      options: App.state.cultivos,
-      styles: 'form-group',
-      value: this.datamodel.cultivos,
-      unselectedText: 'Seleccione hasta 2 cultivos',
-      idAttribute: 'id_cultivo',
-      textAttribute: 'nombre',
-      requiredMessage: 'Ingrese al menos un cultivo',
-      invalidClass: 'text-danger',
-      validityClassSelector: '.control-label',
-      yieldModel: true
-    })
-
-    // selectCultivos.listenTo(this.datamodel.cultivos, 'add', () => {
-      // selectCultivos.setValues(this.datamodel.cultivos)
-    // })
 
     this.fields = [
       new InputView({
@@ -69,7 +42,23 @@ export default FormView.extend({
         textAttribute: 'nombre',
         validityClassSelector: '.control-label'
       }),
-      selectCultivos,
+      new Select2View({
+        label: 'Cultivos',
+        name: 'cultivos',
+        multiple: true,
+        tags: true,
+        required: true,
+        options: App.state.cultivos,
+        styles: 'form-group',
+        value: this.datamodel.cultivos,
+        unselectedText: 'Seleccione hasta 2 cultivos',
+        idAttribute: 'id_cultivo',
+        textAttribute: 'nombre',
+        requiredMessage: 'Ingrese al menos un cultivo',
+        invalidClass: 'text-danger',
+        validityClassSelector: '.control-label',
+        yieldModel: true
+      })
       // new SelectView({
       //   name: 'id_tipo_cultivo',
       //   label: 'Cultivo',
@@ -118,26 +107,26 @@ export default FormView.extend({
       //     }
       //   ]
       // }),
-      new CheckboxView({
-        name: 'axa',
-        label: 'Ambientación',
-        value: this.datamodel.axa
-      }),
-      new CheckboxView({
-        name: 'mol',
-        label: 'Monitoreo Online',
-        value: this.datamodel.mol
-      }),
-      new CheckboxView({
-        name: 'cosecha',
-        label: 'Mapa de Rinde',
-        value: this.datamodel.cosecha
-      }),
-      new CheckboxView({
-        name: 'prescripcion',
-        label: 'Prescripción',
-        value: this.datamodel.prescripcion
-      })
+      // new CheckboxView({
+      //   name: 'axa',
+      //   label: 'Ambientación',
+      //   value: this.datamodel.axa
+      // }),
+      // new CheckboxView({
+      //   name: 'mol',
+      //   label: 'Monitoreo Online',
+      //   value: this.datamodel.mol
+      // }),
+      // new CheckboxView({
+      //   name: 'cosecha',
+      //   label: 'Mapa de Rinde',
+      //   value: this.datamodel.cosecha
+      // }),
+      // new CheckboxView({
+      //   name: 'prescripcion',
+      //   label: 'Prescripción',
+      //   value: this.datamodel.prescripcion
+      // })
 
       // no lo pude hacer andar
       // new TagsInputView({
