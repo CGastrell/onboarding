@@ -36,10 +36,10 @@ export default {
     return layerInstance
   },
   hideEditingToolbar: function () {
-    App.Map.drawControl._toolbars.edit._toolbarContainer.style.display = 'none'
+    // App.Map.drawControl._toolbars.edit._toolbarContainer.style.display = 'none'
   },
   showEditingToolbar: function () {
-    App.Map.drawControl._toolbars.edit._toolbarContainer.style.display = ''
+    // App.Map.drawControl._toolbars.edit._toolbarContainer.style.display = ''
   },
   hideDrawingToolbar: function () {
     App.Map.drawControl._toolbars.draw._toolbarContainer.style.display = 'none'
