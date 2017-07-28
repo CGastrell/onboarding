@@ -24,8 +24,10 @@ export default View.extend({
     this.renderWithTemplate(this)
     this.setupMap()
     // IMPORTANT: draw button customization
-    // const drawButton = this.query('.leaflet-draw-draw-polygon')
-    // drawButton.innerHTML = 'Nuevo lote' + drawButton.innerHTML
+    const drawButton = this.query('.leaflet-draw-draw-polygon')
+    drawButton.innerHTML = '<span class="glyphicon glyphicon-plus"></span> Lote' + drawButton.innerHTML
+    drawButton.classList.add('green')
+    // drawButton.classList.add('btn-success')
     this.sidebarView = new SidebarView({sidebarInstance: this.rightSidebar})
     this.sidebarView.render()
   },
