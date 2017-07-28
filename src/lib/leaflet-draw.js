@@ -72,8 +72,9 @@ export const controlOptions = {
     featureGroup: null,
     poly: {
       allowIntersection: false
-    }
-    // remove: false
+    },
+    edit: false,
+    remove: false
   },
   draw: {
     marker: false,
