@@ -77,6 +77,7 @@ export default View.extend({
   initializeFeatures: function () {
     if (App.state.featureCollection && App.state.featureCollection.length > 0) {
       App.state.featureCollection.toGeoJSON().features.forEach(feature => {
+        App.state.settlements.add({nombre: feature.properties.settlement})
         const layer = L.geoJSON(feature)
         layer.eachLayer(l => {
           l.on('click', this.openPolygonModal, this)
@@ -177,9 +178,7 @@ export default View.extend({
     if (App.state.editingEnabled) {
       return
     }
-    if (this.drawControl._toolbars.edit._modes.remove.handler._enabled) {
-      return
-    }
+
     App.state.modalIsOpen = true
     const layer = event.target
     const feature = layer.toGeoJSON()
