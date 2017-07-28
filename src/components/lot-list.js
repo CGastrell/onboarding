@@ -4,17 +4,38 @@ import MapActions from 'actions/map'
 import L from 'leaflet'
 import ReportView from 'components/report'
 
+const SettlementRow = View.extend({
+  template: `
+    <div style="padding-bottom: 15px;">
+      <div data-hook="lots"></div>
+    </div>
+  `,
+  render: function () {
+    this.renderWithTemplate(this)
+    const self = this
+    this.renderCollection(
+      App.state.featureCollection,
+      LotRow,
+      this.queryByHook('lots'),
+      {
+        filter: function (lot) {
+          return lot.properties.settlement === self.model.nombre
+        }
+      }
+    )
+  }
+})
 const LotRow = View.extend({
   template: `
     <div class="lot-detail">
       <div>
+        <div class="subtext"><strong data-hook="settlement"></strong></div>
         <strong data-hook="name" style="cursor: pointer;"></strong>
         <span class="glyphicon glyphicon-trash pull-right minibutton text-danger delete"></span>
         <span class="glyphicon glyphicon-pencil pull-right minibutton text-success edit"></span>
         <span class="glyphicon glyphicon-floppy-disk pull-right minibutton text-success save"></span>
         <span class='glyphicon glyphicon-zoom-in pull-right minibutton center'></span>
       </div>
-      <div class="subtext">Establecimiento: <span data-hook="settlement"></span></div>
       <div class="subtext">Superficie: <span data-hook="area"></span> ha</div>
     </div>`,
   props: {
@@ -86,6 +107,7 @@ const LotRow = View.extend({
     },
     'click .minibutton.delete': function (event) {
       event.preventDefault()
+      if (App.state.editingEnabled) return
       App.Map.drawLayer.removeLayer(App.Map.drawLayer.getLayer(this.model.properties.id))
       App.Map.map.fireEvent(L.Draw.Event.DELETED)
     }
@@ -122,12 +144,16 @@ export default View.extend({
     this.renderWithTemplate(this)
     this.sidebarInstance.setContent(this.el)
 
-    this.renderLotList()
+    this.renderCollection(
+      App.state.settlements,
+      SettlementRow,
+      this.queryByHook('list')
+    )
   },
   renderLotList: function () {
     this.renderCollection(
-      App.state.featureCollection,
-      LotRow,
+      App.state.settlements,
+      SettlementRow,
       this.queryByHook('list')
     )
   },
