@@ -3,7 +3,6 @@ import App from 'ampersand-app'
 import MapActions from 'actions/map'
 import L from 'leaflet'
 import ReportView from 'components/report'
-import bootbox from 'bootbox'
 
 const LotRow = View.extend({
   template: `
@@ -106,34 +105,9 @@ export default View.extend({
   events: {
     'click .ask': function (event) {
       event.preventDefault()
-      console.log('ask for')
-      console.log(App.state.featureCollection.toGeoJSON())
-      App.Map.rightSidebar.hide()
-      // const closeConfirmAndZoom = (feature) => {
-      //   MapActions.zoomToFeature(feature)
-      //   if (this.confirmModal) {
-      //     this.confirmModal.modal('hide')
-      //   }
-      // }
-      const reportView = new ReportView({
-        // lotSearchFn: closeConfirmAndZoom.bind(this)
-      })
+      const reportView = new ReportView()
       reportView.render()
-
-      this.confirmModal = bootbox.confirm({
-        title: 'Solicitud de presupuesto',
-        message: reportView.el,
-        callback: this.requestReport,
-        buttons: {
-          confirm: {
-            label: 'Pedir presupuesto',
-            className: 'btn-success'
-          },
-          cancel: {
-            label: 'Cerrar'
-          }
-        }
-      })
+      App.Map.rightSidebar.hide()
     }
   },
   requestReport: function () {
