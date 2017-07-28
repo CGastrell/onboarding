@@ -45,7 +45,7 @@ export default View.extend({
         return (
           typeof item !== 'undefined' &&
           typeof item.localidad !== 'undefined' &&
-          `${item.localidad}, ${item.provincia}`) || item
+          `${item.localidad}, ${item.departamento}, ${item.provincia}`) || item
       }
     })
     // the toggle is done here so it only takes effect
