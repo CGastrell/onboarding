@@ -115,7 +115,6 @@ export default View.extend({
     }
   },
   updateFeatures: function (event) {
-    console.log(event)
     let layerTempId = 0
     let returnLayer = null
     if (event.type === L.Draw.Event.CREATED) {
@@ -196,7 +195,6 @@ export default View.extend({
       },
       save => {
         if (!save) { // canceled
-          console.log('modalIsOpen false')
           App.state.modalIsOpen = false
           return
         }
@@ -210,12 +208,9 @@ export default View.extend({
           })
           return false
         }
-        console.log('modalIsOpen true')
         App.state.modalIsOpen = false
         layer.feature.properties = Object.assign({}, feature.properties, this.lotForm.formView.data)
-        console.log(layer.feature)
         this.updateFeatures({type: null})
-        // this.lotForm.remove()
       }
     )
   }
