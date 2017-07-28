@@ -7,8 +7,8 @@ const defaultProps = () => {
     id: 0,
     nombre: '',
     settlement: '',
-    id_tipo_cultivo: 0,
-    id_localidad: 0,
+    // id_tipo_cultivo: 0,
+    // id_localidad: 0,
     cultivos: new Cultivos(),
     mol: false,
     axa: false,
@@ -77,9 +77,16 @@ const Model = AmpersandModel.extend({
 const Collection = AmpersandCollection.extend({
   model: Model,
   toGeoJSON: function (filter) {
+    const plain = this.toJSON().map(feature => {
+      if (feature.properties.cultivos.isCollection) {
+        feature.properties.cultivos = feature.properties.cultivos.toJSON()
+      }
+      console.log(feature.properties.cultivos)
+      return feature
+    })
     return {
       type: 'FeatureCollection',
-      features: filter ? this.toJSON().filter(filter) : this.toJSON()
+      features: filter ? plain.filter(filter) : plain
     }
   }
 })
