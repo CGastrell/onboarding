@@ -13,9 +13,7 @@ import GlobalState from 'state'
 import User from 'model/user'
 import 'styles/main.css'
 
-// import * as Actions from 'actions'
-// import { Auth } from 'actions'
-// import AuthActions from 'actions/auth'
+import samplePayload from 'model/sample_payload.json'
 
 window.app = App
 
@@ -29,6 +27,12 @@ App.extend({
   config: {},
   localidades: [],
   user: new User(),
+  loadSample: () => {
+    App.state.featureCollection.reset(samplePayload.features)
+    App.Map.initializeFeatures()
+    const bbox = App.Map.drawLayer.getBounds()
+    App.Map.map.fitBounds(bbox, { paddingBottomRight: [380, 0] })
+  },
   fetch: fetch,
   init: function (state) { // reinicializar aca, cleanup por cada view, preservar locs
     if (!App.progress.status) {
