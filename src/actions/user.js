@@ -66,5 +66,37 @@ export default {
         })
       })
     }
+  },
+  requestBudget (payload) {
+    const returnToNormal = () => {
+      App.progress.done()
+      App.Map.rightSidebar.show()
+    }
+    fetch.post(
+      '/onboarding/data',
+      { body: JSON.stringify({data: payload}) },
+      true
+    )
+    .then(res => {
+      if (res.status >= 400) {
+        throw new Error('API error')
+      }
+      return res.json()
+    })
+    .then(function () {
+      bootbox.alert({
+        title: 'Enhorabuena!',
+        message: 'Se ha enviado su solicitud de presupuesto.<br /><br />A la brevedad nos contactaremos con Ud.',
+        callback: returnToNormal
+      })
+    })
+    .catch(error => {
+      console.warn(error)
+      bootbox.alert({
+        title: 'Error',
+        message: 'Hubo un error guardando los datos. Por favor, inténtelo nuevamente',
+        callback: returnToNormal
+      })
+    })
   }
 }
