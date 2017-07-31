@@ -79,6 +79,7 @@ export default View.extend({
     // this.map.on(L.Draw.Event.DRAWVERTEX, this.vertexHandler)
     this.map.on(L.Draw.Event.DRAWSTART, this.drawStartHandler, this)
     this.map.on(L.Draw.Event.DRAWSTOP, this.drawStopHandler, this)
+    this.map.on('moveend', this.onMove, this)
     this.map.on('contextmenu', this.onRightClick, this)
   },
   initializeFeatures: function () {
@@ -91,6 +92,12 @@ export default View.extend({
           this.drawLayer.addLayer(l)
         })
       })
+    }
+  },
+  onMove: function (event) {
+    if (this.inDrawMode) {
+      // surely an involuntary vertex was added, so remove it
+      this.drawControl._toolbars.draw._modes.polygon.handler.deleteLastVertex()
     }
   },
   drawStartHandler: function (event) {
