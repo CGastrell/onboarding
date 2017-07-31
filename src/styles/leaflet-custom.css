@@ -66,3 +66,7 @@ to somewhere in the left top corner of the map*/
 .leaflet-marker-pane > .vertex ~ .vertex {
   animation: none;
 }
+.undo-icon {
+  background-color: #fff;
+  border-radius: 6px;
+}
