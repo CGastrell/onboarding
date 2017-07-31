@@ -20,6 +20,9 @@ export default View.extend({
   template: `<div id="map">
     <div id="rightSidebar" data-hook="rightSidebar"></div>
   </div>`,
+  props: {
+    inDrawMode: [ 'boolean', true, false ]
+  },
   render: function () {
     this.renderWithTemplate(this)
     this.setupMap()
@@ -73,6 +76,10 @@ export default View.extend({
     this.map.on(L.Draw.Event.DELETED, this.updateFeatures.bind(this))
     this.map.on(L.Draw.Event.EDITSTART, () => { App.state.editingEnabled = true })
     this.map.on(L.Draw.Event.EDITSTOP, () => { App.state.editingEnabled = false })
+    // this.map.on(L.Draw.Event.DRAWVERTEX, this.vertexHandler)
+    this.map.on(L.Draw.Event.DRAWSTART, this.drawStartHandler, this)
+    this.map.on(L.Draw.Event.DRAWSTOP, this.drawStopHandler, this)
+    this.map.on('contextmenu', this.onRightClick, this)
   },
   initializeFeatures: function () {
     if (App.state.featureCollection && App.state.featureCollection.length > 0) {
@@ -86,6 +93,54 @@ export default View.extend({
       })
     }
   },
+  drawStartHandler: function (event) {
+    this.inDrawMode = true
+  },
+  drawStopHandler: function (event) {
+    this.inDrawMode = false
+  },
+  onRightClick: function (event) {
+    console.log(this.inDrawMode)
+    if (!this.inDrawMode) return
+    console.log('kick in')
+    const _markers = App.Map
+      .drawControl
+      ._toolbars
+      .draw
+      ._modes
+      .polygon
+      .handler
+      ._markers
+    if (!_markers.length || _markers.length < 4) return
+    this.drawControl._toolbars.draw._modes.polygon.handler.deleteLastVertex()
+    this.drawControl._toolbars.draw._modes.polygon.handler._finishShape()
+  },
+  // vertexHandler: function (event) {
+  //   const _markers = App.Map
+  //     .drawControl
+  //     ._toolbars
+  //     .draw
+  //     ._modes
+  //     .polygon
+  //     .handler
+  //     ._markers
+  //   if (!_markers.length || _markers.length < 2) return
+  //   const myIcon = L.divIcon({
+  //     className: 'undo-icon',
+  //     iconAnchor: [-10, -20],
+  //     iconSize: [12, 12]
+  //   })
+  //   const lastVertex = _markers[_markers.length - 1]
+  //   const lastLatLng = lastVertex._latlng
+  //   const undoMarker = L.marker(lastLatLng, {icon: myIcon}).addTo(App.Map.markers)
+  //   undoMarker.on('click', function onMarkerClick (event) {
+  //     event.preventDefault()
+  //     event.stopPropagation()
+  //     App.Map.drawControl._toolbars.draw._modes.polygon.handler.deleteLastVertex()
+  //     undoMarker.off('click', onMarkerClick)
+  //     undoMarker.remove()
+  //   })
+  // },
   onCreated: function (event) {
     // event.target -> L.Map
     // event.layer -> L.Polygon (or proper geometry primitive)
