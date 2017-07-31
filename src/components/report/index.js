@@ -145,8 +145,8 @@ const LotTable = (props) => {
     <table className='table table-striped table-hover'>
       <thead>
         <tr>
-          <th>Nombre</th>
           <th>Establecimiento</th>
+          <th>Lote</th>
           <th>Área</th>
           <th>Cultivos</th>
           <th>Productos</th>
@@ -178,10 +178,10 @@ class LotRow extends React.Component {
     const { nombre, settlement, cultivos } = properties
     const area = (Number(properties.area) / 100 << 0) / 100
     const productos = [
-      { code: 'axa', nombre: 'Ambientacion' },
+      { code: 'axa', nombre: 'Ambientación+Prescripción' },
       { code: 'mol', nombre: 'Monitoreo OnLine' },
-      { code: 'cosecha', nombre: 'Cosecha' },
-      { code: 'prescripcion', nombre: 'Prescripcion' }
+      { code: 'cosecha', nombre: 'Mapa de Rinde' },
+      { code: 'mascara', nombre: 'Máscara de Agua' }
     ]
     const Cultivo = (cultivo, idx) => (
       idx === 0
@@ -191,8 +191,8 @@ class LotRow extends React.Component {
 
     return (
       <tr className='lot-row'>
-        <td className='nombre'>{nombre}</td>
         <td className='settlment'>{settlement}</td>
+        <td className='nombre'>{nombre}</td>
         <td className='area'>{area} has.</td>
         <td className='cultivos'>{cultivos.map(Cultivo)}</td>
         <td className='productos'>{

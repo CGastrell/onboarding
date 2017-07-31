@@ -13,7 +13,7 @@ const defaultProps = () => {
     mol: false,
     axa: false,
     cosecha: false,
-    prescripcion: false,
+    mascara: false,
     // geo stuff
     area: 0,
     perimeter: 0,
