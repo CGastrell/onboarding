@@ -73,7 +73,7 @@ export default {
       App.Map.rightSidebar.show()
     }
     fetch.post(
-      '/onboarding/data',
+      '/onboarding/anonymous/data',
       { body: JSON.stringify({data: payload}) },
       true
     )
