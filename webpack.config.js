@@ -11,6 +11,13 @@ var UglifyJsPlugin = require('webpack-uglify-js-plugin')
 
 // GH-PAGES deployment
 var publicPath = process.env['SITE'] === 'ghpages' ? '/onboarding/' : '/'
+switch (process.env['SITE']) {
+  case 's3': publicPath = '/feature-onboarding/'
+    break
+  case 'ghpages': publicPath = '/onboarding/'
+    break
+  default: publicPath = '/'
+}
 var filenameTemplate = process.env['SITE'] === 'ghpages' ? '[name]' : '[name]-[hash:6]'
 
 module.exports = {
