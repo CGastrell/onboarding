@@ -5,7 +5,7 @@ let config = {}
 switch (env) {
   case 'production':
     config = {
-      apiUrl: 'https://api-experimental.webgis.frontec.net'
+      apiUrl: 'https://api-development.webgis.frontec.net'
     }
     break
   default:
