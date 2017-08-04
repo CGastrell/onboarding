@@ -32,6 +32,7 @@ App.extend({
     App.Map.initializeFeatures()
     const bbox = App.Map.drawLayer.getBounds()
     App.Map.map.fitBounds(bbox, { paddingBottomRight: [380, 0] })
+    App.Map.updateFeatures({type: ''})
   },
   fetch: fetch,
   init: function (state) { // reinicializar aca, cleanup por cada view, preservar locs
