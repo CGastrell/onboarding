@@ -54,3 +54,11 @@ td.productos, th.productos {
   /*white-space: nowrap;*/
   text-align: center;
 }
+.icon-label {
+  font-size: 10px;
+  white-space: nowrap;
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 3px;
+  border-radius: 2px;
+  max-height: 4em;
+}
