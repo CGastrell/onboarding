@@ -56,7 +56,7 @@ export default View.extend({
       'H&iacute;brido': this.hybridLayer,
       'Sat&eacute;lite': this.satelliteLayer,
       'Plano': this.plainLayer
-    }, null, {position: 'topleft'}).addTo(this.map)
+    }, null, {collapsed: false, position: 'topleft'}).addTo(this.map)
 
     let options = JSON.parse(JSON.stringify(controlOptions))
     options.edit.featureGroup = this.drawLayer
@@ -173,6 +173,42 @@ export default View.extend({
     // some way of tracking the layer
     this.openPolygonModal({target: newLayer})
   },
+  reAddLayer: function (layer) {
+    layer.addTo(this.drawLayer)
+    layer.feature.properties.id = layer._leaflet_id
+    layer.feature.properties.area = this.getPolygonArea(layer)
+    layer.feature.properties.bbox = layer.getBounds().toBBoxString()
+    layer.feature.properties.perimeter = this.getPolygonPerimeter(layer)
+
+    layer.on('click', this.openPolygonModal, this)
+
+    // layer.bindPopup(`
+    //   <span>${layer.feature.properties.settlement}</span><br />
+    //   <strong>${layer.feature.properties.nombre}</strong>
+    // `)
+    // layer.on('mouseover', function (e) {
+    //   this.openPopup()
+    // })
+    // layer.on('mouseout', function (e) {
+    //   this.closePopup()
+    // })
+
+    if (!layer.feature || !layer.getCenter) return
+    const southest = layer.getBounds().getSouth()
+
+    const label = new L.Marker([southest, layer.getCenter().lng], {
+      icon: new L.DivIcon({
+        className: 'icon-label',
+        iconSize: [120, 45],
+        iconAnchor: [60, 0],
+        html: `
+          ${layer.feature.properties.settlement}<br />
+          <strong>${layer.feature.properties.nombre}</strong>
+        `
+      })
+    })
+    label.addTo(this.drawLayer)
+  },
   updateMapState: function (event) {
     App.state.mapstate = {
       center: Object.assign({}, event.target.getCenter()),
@@ -186,12 +222,17 @@ export default View.extend({
       layerTempId = event.layer.feature.properties.id
     }
     this.drawLayer.eachLayer(layer => {
+      if (!layer.feature || !layer.feature.geometry) return
+      if (layer.feature.geometry.type !== 'Polygon') return
       layer.feature.properties.area = this.getPolygonArea(layer)
       layer.feature.properties.bbox = layer.getBounds().toBBoxString()
       layer.feature.properties.perimeter = this.getPolygonPerimeter(layer)
     })
 
     const featureCollection = this.drawLayer.toGeoJSON()
+    featureCollection.features.filter(feature => {
+      return feature.properties !== undefined
+    })
     // App.state.featureCollection.reset()
     if (event.type === L.Draw.Event.DELETED && !featureCollection.features.length) {
       App.stateAnyway = true
@@ -205,13 +246,7 @@ export default View.extend({
       if (event.type === L.Draw.Event.CREATED && layer.feature.properties.id === layerTempId) {
         returnLayer = layer
       }
-      layer.addTo(this.drawLayer)
-      layer.feature.properties.id = layer._leaflet_id
-      layer.feature.properties.area = this.getPolygonArea(layer)
-      layer.feature.properties.bbox = layer.getBounds().toBBoxString()
-      layer.feature.properties.perimeter = this.getPolygonPerimeter(layer)
-
-      layer.on('click', this.openPolygonModal, this)
+      this.reAddLayer(layer)
     }
     // temp layer to rebuild the drawLayer
     L.geoJSON(App.state.featureCollection.toGeoJSON())
