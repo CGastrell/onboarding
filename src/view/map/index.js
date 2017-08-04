@@ -17,9 +17,10 @@ import {drawingStyles, controlOptions} from 'lib/leaflet-draw'
 
 export default View.extend({
   autoRender: true,
-  template: `<div id="map">
-    <div id="rightSidebar" data-hook="rightSidebar"></div>
-  </div>`,
+  template: `
+    <div id="map">
+      <div id="rightSidebar" data-hook="rightSidebar"></div>
+    </div>`,
   props: {
     inDrawMode: [ 'boolean', true, false ]
   },
@@ -230,8 +231,8 @@ export default View.extend({
     })
 
     const featureCollection = this.drawLayer.toGeoJSON()
-    featureCollection.features.filter(feature => {
-      return feature.properties !== undefined
+    featureCollection.features = featureCollection.features.filter(feature => {
+      return feature.geometry.type === 'Polygon'
     })
     // App.state.featureCollection.reset()
     if (event.type === L.Draw.Event.DELETED && !featureCollection.features.length) {
