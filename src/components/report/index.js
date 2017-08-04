@@ -114,6 +114,7 @@ class ReportRequest extends React.Component {
     this.state = geojson
     leState = geojson
     this.handleProductToggle = this.handleProductToggle.bind(this)
+    this.removeLot = this.removeLot.bind(this)
   }
 
   handleProductToggle (product, lot) {
@@ -127,12 +128,20 @@ class ReportRequest extends React.Component {
     leState = JSON.parse(JSON.stringify(this.state))
   }
 
+  removeLot (id) {
+    const features = this.state.features.filter(feature => {
+      return feature.id !== id
+    })
+    this.setState({features: features})
+  }
+
   render () {
     return (
       <div>
         <LotTable
           collection={this.state.features}
           onProductToggle={this.handleProductToggle}
+          onLotRemove={this.removeLot}
         />
       </div>
     )
@@ -140,16 +149,25 @@ class ReportRequest extends React.Component {
 }
 
 const LotTable = (props) => {
-  const { collection, onProductToggle } = props
+  const { collection, onProductToggle, onLotRemove } = props
   return (
     <table className='table table-striped table-hover'>
       <thead>
+        <tr>
+          <th colSpan='4' />
+          <th colSpan='4' className='productos'>Productos</th>
+          <th />
+        </tr>
         <tr>
           <th>Establecimiento</th>
           <th>Lote</th>
           <th>Área</th>
           <th>Cultivos</th>
-          <th>Productos</th>
+          <th className='productos'>Ambientación + Prescripción</th>
+          <th className='productos'>Monitoreo OnLine</th>
+          <th className='productos'>Mapa de Rinde</th>
+          <th className='productos'>Máscara de Agua</th>
+          <th />
         </tr>
       </thead>
       <tbody>
@@ -160,6 +178,7 @@ const LotTable = (props) => {
               id={feature.id}
               properties={feature.properties}
               onProductToggle={onProductToggle}
+              onLotRemove={onLotRemove}
             />
           })
         }
@@ -174,7 +193,7 @@ class LotRow extends React.Component {
   // }
 
   render () {
-    const { id, properties, onProductToggle } = this.props
+    const { id, properties, onProductToggle, onLotRemove } = this.props
     const { nombre, settlement, cultivos } = properties
     const area = (Number(properties.area) / 100 << 0) / 100
     const productos = [
@@ -195,28 +214,53 @@ class LotRow extends React.Component {
         <td className='nombre'>{nombre}</td>
         <td className='area'>{area} has.</td>
         <td className='cultivos'>{cultivos.map(Cultivo)}</td>
-        <td className='productos'>{
+        {
           productos.map((producto, idx) => {
-            const active = properties[producto.code] ? 'btn-primary' : 'btn-default'
+            const active = properties[producto.code] === true
+              ? 'btn-primary'
+              : 'btn-default'
+            const checked = properties[producto.code] === true
+              ? 'glyphicon-check'
+              : 'glyphicon-unchecked'
             return (
-              <a
-                href='toggleProduct'
-                key={producto.code}
-                role='button'
-                className={`btn ${active} btn-xs`}
-                data-toggle='tooltip'
-                data-placement='top'
-                title='Haga click para activar el producto'
-                onClick={
-                  event => {
-                    event.preventDefault()
-                    onProductToggle(producto.code, id)
-                  }
-                }>{producto.nombre}
-              </a>
+              <td className='productos'>
+                <a
+                  href='toggleProduct'
+                  key={producto.code}
+                  role='button'
+                  className={`btn ${active} btn-xs`}
+                  data-toggle='tooltip'
+                  data-placement='top'
+                  title='Haga click para activar el producto'
+                  onClick={
+                    event => {
+                      event.preventDefault()
+                      onProductToggle(producto.code, id)
+                    }
+                  }>
+                  <span className={'glyphicon ' + checked} />
+                </a>
+              </td>
             )
           })
-        }</td>
+        }
+        <td className='productos'>
+          <a
+            href='removeLot'
+            role='button'
+            className='btn btn-danger btn-xs'
+            data-toggle='tooltip'
+            data-placement='right'
+            title='Remover lote'
+            onClick={
+              event => {
+                event.preventDefault()
+                onLotRemove(id)
+              }
+            }>
+            <span className='glyphicon glyphicon-trash' />
+          </a>
+        </td>
       </tr>
     )
   }
