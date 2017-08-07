@@ -72,6 +72,7 @@ export default {
       App.progress.done()
       App.Map.rightSidebar.show()
     }
+
     fetch.post(
       '/onboarding/anonymous/data',
       { body: JSON.stringify({data: payload}) },

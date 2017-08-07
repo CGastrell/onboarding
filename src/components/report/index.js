@@ -125,17 +125,18 @@ class ReportRequest extends React.Component {
       return feature
     })
     this.setState({features: features})
-    leState = JSON.parse(JSON.stringify(this.state))
   }
 
   removeLot (id) {
     const features = this.state.features.filter(feature => {
       return feature.id !== id
     })
+
     this.setState({features: features})
   }
 
   render () {
+    leState = JSON.parse(JSON.stringify(this.state))
     return (
       <div>
         <LotTable
