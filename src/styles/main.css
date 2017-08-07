@@ -24,6 +24,12 @@ document, body, html {
   clear: both;
 }
 
+@media (min-width: 768px) {
+  .modal-dialog {
+    width: 750px;
+  }
+}
+
 select.form-control.comboselect {
   -webkit-appearance: initial;
 }
