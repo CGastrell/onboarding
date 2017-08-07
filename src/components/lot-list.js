@@ -8,9 +8,15 @@ import 'bootstrap/js/tooltip'
 
 const SettlementRow = View.extend({
   template: `
-    <div style="padding-bottom: 15px;">
-      <div data-hook="lots"></div>
+    <div style="padding-top: 10px; padding-bottom: 15px;">
+      <div><strong data-hook="settlement"></strong></div>
+      <div data-hook="lots" style="padding-left: 4px;"></div>
     </div>`,
+  bindings: {
+    'model.nombre': {
+      hook: 'settlement'
+    }
+  },
   render: function () {
     this.renderWithTemplate(this)
     const self = this
@@ -67,9 +73,9 @@ const LotRow = View.extend({
     'formattedArea': {
       hook: 'area'
     },
-    'model.properties.settlement': {
-      hook: 'settlement'
-    },
+    // 'model.properties.settlement': {
+    //   hook: 'settlement'
+    // },
     editing: [
       {
         type: 'toggle',
@@ -165,13 +171,13 @@ export default View.extend({
       this.queryByHook('list')
     )
   },
-  renderLotList: function () {
-    this.renderCollection(
-      App.state.settlements,
-      SettlementRow,
-      this.queryByHook('list')
-    )
-  },
+  // renderLotList: function () {
+  //   this.renderCollection(
+  //     App.state.settlements,
+  //     SettlementRow,
+  //     this.queryByHook('list')
+  //   )
+  // },
   onFeatures: function (state) {
     if (App.state.featureCollection.length > 0) {
       if (App.state.modalIsOpen) {
