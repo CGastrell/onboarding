@@ -3,13 +3,14 @@ import App from 'ampersand-app'
 import MapActions from 'actions/map'
 import L from 'leaflet'
 import ReportView from 'components/report'
+import $ from 'jquery'
+import 'bootstrap/js/tooltip'
 
 const SettlementRow = View.extend({
   template: `
     <div style="padding-bottom: 15px;">
       <div data-hook="lots"></div>
-    </div>
-  `,
+    </div>`,
   render: function () {
     this.renderWithTemplate(this)
     const self = this
@@ -31,16 +32,26 @@ const LotRow = View.extend({
       <div>
         <div class="subtext"><strong data-hook="settlement"></strong></div>
         <strong data-hook="name" style="cursor: pointer;"></strong>
-        <span class="glyphicon glyphicon-trash pull-right minibutton text-danger delete"></span>
-        <span class="glyphicon glyphicon-pencil pull-right minibutton text-success edit"></span>
-        <span class="glyphicon glyphicon-floppy-disk pull-right minibutton text-success save"></span>
-        <span class='glyphicon glyphicon-zoom-in pull-right minibutton center'></span>
+        <span
+          class="glyphicon glyphicon-trash pull-right minibutton text-danger delete"
+          data-toggle="tooltip"
+          title="Borrar lote"></span>
+        <span
+          class="glyphicon glyphicon-pencil pull-right minibutton text-success edit"
+          data-toggle="tooltip"
+          title="Modificar geometría"></span>
+        <span
+          class="glyphicon glyphicon-floppy-disk pull-right minibutton text-success save"
+          data-toggle="tooltip"
+          title="Finalizar edición"></span>
+        <span
+          class="glyphicon glyphicon-zoom-in pull-right minibutton center"
+          data-toggle="tooltip"
+          title="Acercar"></span>
       </div>
       <div class="subtext">Superficie: <span data-hook="area"></span> ha</div>
     </div>`,
-  props: {
-    editing: [ 'boolean', true, false ]
-  },
+  props: { editing: [ 'boolean', true, false ] },
   derived: {
     formattedArea: {
       deps: ['model.properties.area'],
@@ -111,6 +122,10 @@ const LotRow = View.extend({
       App.Map.drawLayer.removeLayer(App.Map.drawLayer.getLayer(this.model.properties.id))
       App.Map.map.fireEvent(L.Draw.Event.DELETED)
     }
+  },
+  render: function () {
+    this.renderWithTemplate(this)
+    $('[data-toggle="tooltip"]', this.el).tooltip()
   }
 })
 export default View.extend({
