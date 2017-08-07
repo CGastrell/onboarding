@@ -188,9 +188,9 @@ const LotTable = (props) => {
 }
 
 class LotRow extends React.Component {
-  // componentDidMount () {
-  //   $('[data-toggle="tooltip"]').tooltip()
-  // }
+  componentDidMount () {
+    $('[data-toggle="tooltip"]').tooltip()
+  }
 
   render () {
     const { id, properties, onProductToggle, onLotRemove } = this.props
@@ -231,7 +231,7 @@ class LotRow extends React.Component {
                   className={`btn ${active} btn-xs`}
                   data-toggle='tooltip'
                   data-placement='top'
-                  title='Haga click para activar el producto'
+                  title='pedir este producto para el lote'
                   onClick={
                     event => {
                       event.preventDefault()
@@ -251,7 +251,7 @@ class LotRow extends React.Component {
             className='btn btn-danger btn-xs'
             data-toggle='tooltip'
             data-placement='right'
-            title='Remover lote'
+            title='Remover lote del presupuesto'
             onClick={
               event => {
                 event.preventDefault()
