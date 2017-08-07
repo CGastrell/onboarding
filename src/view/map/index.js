@@ -195,13 +195,13 @@ export default View.extend({
     // })
 
     if (!layer.feature || !layer.getCenter) return
-    const southest = layer.getBounds().getSouth()
+    // const southest = layer.getBounds().getSouth()
 
-    const label = new L.Marker([southest, layer.getCenter().lng], {
+    const label = new L.Marker(layer.getCenter(), {
       icon: new L.DivIcon({
         className: 'icon-label',
         iconSize: [120, 45],
-        iconAnchor: [60, 0],
+        // iconAnchor: [60, 0],
         html: `
           ${layer.feature.properties.settlement}<br />
           <strong>${layer.feature.properties.nombre}</strong>
