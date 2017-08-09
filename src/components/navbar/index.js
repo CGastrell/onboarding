@@ -5,6 +5,7 @@ import UserMenu from './user-menu'
 import LoginButton from './login-button'
 import 'bootstrap/js/dropdown'
 import 'bootstrap/js/collapse'
+import logo from './logo-frontec.png'
 
 const template = `
 <nav class="navbar navbar-default navbar-static-top" style="flex-grow: 0;">
@@ -17,7 +18,7 @@ const template = `
         <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand" href="#">
-        <img src="images/logo-frontec.png" />
+        <img src="${logo}" />
       </a>
     </div>
     <div id="nav1" class="collapse navbar-collapse" data-hook="navbar-collapse">
