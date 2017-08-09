@@ -27,8 +27,11 @@ export default AmpersandView.extend({
     </div>`,
   events: {
     'click [data-hook="delete"]': function (event) {
-      App.Map.drawLayer.removeLayer(this.layer)
       this.modal.modal('hide')
+      App.Map.drawLayer.removeLayer(App.Map.drawLayer.getLayer(this.layer.feature.properties.id))
+      App.Map.map.fireEvent(L.Draw.Event.DELETED)
+      App.state.modalIsOpen = false
+
       // const report = new ReportView()
       // report.render()
       // bootbox.confirm({
