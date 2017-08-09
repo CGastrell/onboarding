@@ -194,7 +194,9 @@ export default View.extend({
     //   this.closePopup()
     // })
 
-    if (!layer.feature || !layer.getCenter) return
+    if (!layer.feature || !layer.getCenter || !layer.feature.properties.nombre) {
+      return
+    }
     // const southest = layer.getBounds().getSouth()
 
     const label = new L.Marker(layer.getCenter(), {
@@ -282,12 +284,11 @@ export default View.extend({
     const feature = layer.toGeoJSON()
 
     this.lotForm = new LotForm({
-      datamodel: feature.properties,
       layer: layer
     })
     this.lotForm.render()
 
-    bootbox.form(
+    this.lotForm.modal = bootbox.form(
       {
         message: this.lotForm.el,
         title: 'Datos del lote'
