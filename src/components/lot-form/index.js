@@ -1,8 +1,9 @@
+import App from 'ampersand-app'
 import AmpersandView from 'ampersand-view'
 import LotForm from './lot-form'
 import L from 'leaflet'
-import ReportView from 'components/report'
-import bootbox from 'components/bootbox'
+// import ReportView from 'components/report'
+// import bootbox from 'components/bootbox'
 
 export default AmpersandView.extend({
   template: `
@@ -16,31 +17,41 @@ export default AmpersandView.extend({
           <dd><var data-hook="perimetro">lotname</var> m</dd>
         </dl>
       </div>
+      <div class="col-md-12">
+        <p class="">
+          <a data-hook="delete" tab-index="-1" role="button" class="btn btn-danger">
+            Borrar lote <span class="glyphicon glyphicon-trash"></span>
+          </a>
+        </p>
+      </div>
     </div>`,
   events: {
-    'click [data-hook="report"]': function (event) {
-      const report = new ReportView()
-      report.render()
-      bootbox.confirm({
-        title: 'Reporte',
-        message: report.el,
-        buttons: {
-          cancel: {
-            label: 'Cerrar'
-          },
-          confirm: {
-            label: 'Presupuestar',
-            className: 'btn-success'
-          }
-        },
-        callback: ask => {
-          console.log('ask for a presupuesto senior:', ask)
-        }
-      })
+    'click [data-hook="delete"]': function (event) {
+      App.Map.drawLayer.removeLayer(this.layer)
+      this.modal.modal('hide')
+      // const report = new ReportView()
+      // report.render()
+      // bootbox.confirm({
+      //   title: 'Reporte',
+      //   message: report.el,
+      //   buttons: {
+      //     cancel: {
+      //       label: 'Cerrar'
+      //     },
+      //     confirm: {
+      //       label: 'Presupuestar',
+      //       className: 'btn-success'
+      //     }
+      //   },
+      //   callback: ask => {
+      //     console.log('ask for a presupuesto senior:', ask)
+      //   }
+      // })
     }
   },
   props: {
-    layer: [ 'object', true ]
+    layer: [ 'object', true ],
+    modal: [ 'object', false ]
   },
   bindings: {
     area: {
