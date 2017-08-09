@@ -16,7 +16,9 @@ const template = `
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">Frontec</a>
+      <a class="navbar-brand" href="#">
+        <img src="images/logo-frontec.png" />
+      </a>
     </div>
     <div id="nav1" class="collapse navbar-collapse" data-hook="navbar-collapse">
       <ul class="nav navbar-nav navbar-right" data-hook="user-menu">

@@ -18,6 +18,13 @@ document, body, html {
 .navbar {
   margin-bottom: 0;
 }
+.navbar-default {
+  background-color: #0a98d6;
+  border-color: #333;
+}
+.navbar-brand > img {
+  height: 100%;
+}
 
 .bootbox-body:after, .bootbox-body:after {
   content: ' ';
