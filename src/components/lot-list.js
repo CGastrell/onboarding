@@ -15,11 +15,23 @@ const SettlementRow = View.extend({
   bindings: {
     'model.nombre': {
       hook: 'settlement'
+    },
+    visible: {
+      type: 'toggle'
     }
+  },
+  props: {
+    visible: [ 'boolean', true, false ]
   },
   render: function () {
     this.renderWithTemplate(this)
     const self = this
+    this.listenTo(App.state.featureCollection, 'reset change add remove sync', function (state) {
+      this.visible = Boolean(state.filter(feature => {
+        return feature.properties && feature.properties.settlement &&
+          feature.properties.settlement === this.model.nombre
+      }).length)
+    })
     this.renderCollection(
       App.state.featureCollection,
       LotRow,
@@ -168,7 +180,8 @@ export default View.extend({
     this.renderCollection(
       App.state.settlements,
       SettlementRow,
-      this.queryByHook('list')
+      this.queryByHook('list'),
+      { }
     )
   },
   // renderLotList: function () {
@@ -178,7 +191,14 @@ export default View.extend({
   //     this.queryByHook('list')
   //   )
   // },
-  onFeatures: function (state) {
+  onFeatures: function (state, options) {
+    if (state.isCollection) {
+      // specific set of things when this was fired by collection reset
+      if (options.previousModels.length === 0) {
+        // triggered by a create event, we don't want to open the sidebar
+        return
+      }
+    }
     if (App.state.featureCollection.length > 0) {
       if (App.state.modalIsOpen) {
         this.sidebarInstance.hide()
