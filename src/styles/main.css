@@ -25,7 +25,9 @@ document, body, html {
 .navbar-brand > img {
   height: 100%;
 }
-
+.navbar-default .navbar-toggle .icon-bar {
+  background-color: #ddd;
+}
 .bootbox-body:after, .bootbox-body:after {
   content: ' ';
   clear: both;

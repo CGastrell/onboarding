@@ -291,7 +291,17 @@ export default View.extend({
     this.lotForm.modal = bootbox.form(
       {
         message: this.lotForm.el,
-        title: 'Datos del lote'
+        title: 'Datos del lote',
+        extraButton: {
+          label: 'Borrar lote <span class="glyphicon glyphicon-trash"></span>',
+          className: 'btn btn-danger pull-left',
+          close: true,
+          callback: function () {
+            App.Map.drawLayer.removeLayer(App.Map.drawLayer.getLayer(layer.feature.properties.id))
+            App.Map.map.fireEvent(L.Draw.Event.DELETED)
+            App.state.modalIsOpen = false
+          }
+        }
       },
       save => {
         if (!save) { // canceled

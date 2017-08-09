@@ -22,6 +22,16 @@ const createFormModal = function (options, callback) {
       callback: saveCallback
     }
   ]
+  if (options.extraButton) {
+    if (options.extraButton.close) {
+      const buttonCallback = options.extraButton.callback
+      options.extraButton.callback = function (event) {
+        buttonCallback()
+        return callback(false)
+      }
+    }
+    buttons.push(options.extraButton)
+  }
   var modal = bootbox2.dialog({
     message: options.message,
     title: options.title,

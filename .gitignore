@@ -35,3 +35,8 @@ jspm_packages
 
 # Optional REPL history
 .node_repl_history
+
+public/index.html
+public/vendor.bundle.js
+public/main.js
+public/main.css

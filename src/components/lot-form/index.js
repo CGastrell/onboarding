@@ -2,56 +2,23 @@ import App from 'ampersand-app'
 import AmpersandView from 'ampersand-view'
 import LotForm from './lot-form'
 import L from 'leaflet'
-// import ReportView from 'components/report'
-// import bootbox from 'components/bootbox'
+import $ from 'jquery'
 
 export default AmpersandView.extend({
   template: `
     <div data-hook="lot-form" class="clearfix">
       <div data-hook="form-container" class="col-md-6"></div>
       <div data-hook="side-info" class="col-md-6">
-        <dl>
-          <dt>Superficie</dt>
-          <dd><var data-hook="superficie">lotname</var> has</dd>
-          <dt>Per&iacute;metro</dt>
-          <dd><var data-hook="perimetro">lotname</var> m</dd>
-        </dl>
-      </div>
-      <div class="col-md-12">
-        <p class="">
-          <a data-hook="delete" tab-index="-1" role="button" class="btn btn-danger">
-            Borrar lote <span class="glyphicon glyphicon-trash"></span>
-          </a>
+        <p>
+          <dl>
+            <dt>Superficie</dt>
+            <dd><var data-hook="superficie">lotname</var> has</dd>
+            <dt>Per&iacute;metro</dt>
+            <dd><var data-hook="perimetro">lotname</var> m</dd>
+          </dl>
         </p>
       </div>
     </div>`,
-  events: {
-    'click [data-hook="delete"]': function (event) {
-      this.modal.modal('hide')
-      App.Map.drawLayer.removeLayer(App.Map.drawLayer.getLayer(this.layer.feature.properties.id))
-      App.Map.map.fireEvent(L.Draw.Event.DELETED)
-      App.state.modalIsOpen = false
-
-      // const report = new ReportView()
-      // report.render()
-      // bootbox.confirm({
-      //   title: 'Reporte',
-      //   message: report.el,
-      //   buttons: {
-      //     cancel: {
-      //       label: 'Cerrar'
-      //     },
-      //     confirm: {
-      //       label: 'Presupuestar',
-      //       className: 'btn-success'
-      //     }
-      //   },
-      //   callback: ask => {
-      //     console.log('ask for a presupuesto senior:', ask)
-      //   }
-      // })
-    }
-  },
   props: {
     layer: [ 'object', true ],
     modal: [ 'object', false ]
