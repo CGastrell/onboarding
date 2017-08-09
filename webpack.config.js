@@ -109,7 +109,7 @@ module.exports = {
         test: /\.(png|jpg|gif)$/,
         loader: 'url-loader',
         query: {
-          limit: 5000,
+          limit: 6000,
           name: 'images/' + filenameTemplate + '.[ext]'
         }
       },
