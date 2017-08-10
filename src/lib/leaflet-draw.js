@@ -21,7 +21,7 @@ L.drawLocal.draw.toolbar.undo = {
 
 L.drawLocal.draw.handlers.polygon.tooltip = {
   cont: 'Clikee para seguir agregando puntos',
-  end: 'Clickee nuevamente sobre el primer punto para crear el lote',
+  end: 'Clickee nuevamente sobre el primer punto para crear el lote o presione el botón derecho',
   start: 'Clickee para marcar el primer punto'
 }
 
